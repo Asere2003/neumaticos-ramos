@@ -1,0 +1,55 @@
+# ============================================================
+# SEGURIDAD — NUNCA subir estos archivos
+# ============================================================
+
+# Variables de entorno con claves
+.env
+.env.local
+.env.production
+.env.*
+backend/.env
+frontend/src/environments/environment.ts
+frontend/src/environments/environment.development.ts
+
+# ============================================================
+# NODE
+# ============================================================
+node_modules/
+npm-debug.log*
+
+# ============================================================
+# ANGULAR
+# ============================================================
+frontend/dist/
+frontend/.angular/
+
+# ============================================================
+# NESTJS
+# ============================================================
+backend/dist/
+
+# ============================================================
+# DOCKER
+# ============================================================
+docker/postgres/data/
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# IDE
+# ============================================================
+.vscode/settings.json
+.idea/
+```
+
+Guarda con `Ctrl + S`.
+
+---
+
+⚠️ **Importante** — antes del push crea un archivo `environment.example.ts` para que sepas qué variables van ahí:
+```
+frontend/src/environments/environment.example.ts
