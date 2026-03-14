@@ -1,0 +1,379 @@
+// ============================================================
+// NEUMÁTICOS RAMOS — PRISMA SCHEMA COMPLETO
+// Base de datos: PostgreSQL (Supabase)
+// ORM: Prisma
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum EstadoCita {
+  PENDIENTE   // Recién creada, sin confirmar
+  CONFIRMADA  // Confirmada por el taller
+  EN_PROCESO  // El cliente ha llegado, en taller
+  COMPLETADA  // Servicio finalizado
+  CANCELADA   // Cancelada por cliente o taller
+  NO_SHOW     // El cliente no apareció
+}
+
+enum TipoServicio {
+  NEUMATICOS   // Cambio de neumáticos
+  ALINEACION   // Alineación de dirección
+  EQUILIBRADO  // Equilibrado de ruedas
+  LLANTAS      // Venta y montaje de llantas
+}
+
+enum TipoBloqueo {
+  VACACIONES        // Vacaciones del taller
+  FESTIVO_NACIONAL  // Festivo nacional
+  FESTIVO_LOCAL     // Festivo local Granada
+  BAJA              // Baja por enfermedad
+  MANTENIMIENTO     // Mantenimiento del taller
+  OTRO              // Otro motivo
+}
+
+enum CanalNotificacion {
+  WHATSAPP
+  EMAIL
+  SMS
+}
+
+enum TipoNotificacion {
+  CONFIRMACION_CITA    // Al confirmar reserva
+  RECORDATORIO_24H     // 24h antes de la cita
+  RECORDATORIO_2H      // 2h antes de la cita
+  CANCELACION_CITA     // Al cancelar
+  NUEVA_CITA_ADMIN     // Nueva cita al propietario
+  RESUMEN_DIARIO_ADMIN // Resumen diario al propietario
+}
+
+// ============================================================
+// MODELO: Cliente
+// Datos del cliente que reserva citas
+// RGPD: datos mínimos necesarios, con consentimiento
+// ============================================================
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Datos de contacto
+  nombre    String
+  telefono  String   @unique // Usado como identificador principal
+  email     String?  @unique // Opcional
+
+  // RGPD — consentimiento obligatorio
+  aceptaTerminos    Boolean  @default(false) @map("acepta_terminos")
+  aceptaMarketing   Boolean  @default(false) @map("acepta_marketing")
+  fechaConsentimiento DateTime? @map("fecha_consentimiento")
+
+  // Derecho al olvido RGPD — soft delete
+  eliminado   Boolean   @default(false)
+  eliminadoAt DateTime? @map("eliminado_at")
+
+  // Notas internas del taller (no visibles al cliente)
+  notasInternas String? @map("notas_internas")
+
+  // Relaciones
+  vehiculos    Vehiculo[]
+  citas        Cita[]
+  notificaciones NotificacionEnviada[]
+
+  @@map("clientes")
+  @@index([telefono])
+  @@index([email])
+  @@index([eliminado])
+}
+
+// ============================================================
+// MODELO: Vehiculo
+// Vehículo del cliente (puede tener varios)
+// ============================================================
+
+model Vehiculo {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Datos del vehículo
+  marca     String
+  modelo    String?
+  matricula String   @unique
+  anio      Int?
+
+  // Neumáticos actuales
+  medidaNeumaticoDelantero String? @map("medida_neumatico_delantero") // ej: 205/55 R16
+  medidaNeumaticoTrasero   String? @map("medida_neumatico_trasero")   // puede diferir
+
+  // Notas técnicas del vehículo
+  notasTecnicas String? @map("notas_tecnicas")
+
+  // Relaciones
+  clienteId Int     @map("cliente_id")
+  cliente   Cliente @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  citas     Cita[]
+
+  @@map("vehiculos")
+  @@index([matricula])
+  @@index([clienteId])
+}
+
+// ============================================================
+// MODELO: Servicio
+// Los 4 servicios del taller (gestionados por el admin)
+// ============================================================
+
+model Servicio {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Identificador único del tipo
+  tipo        TipoServicio @unique
+
+  // Datos editables por el admin
+  nombre      String
+  descripcion String
+  precioDesde Float?   @map("precio_desde") // Precio orientativo en €
+  duracionMin Int      @map("duracion_min") // Duración estimada en minutos
+  activo      Boolean  @default(true)       // El admin puede desactivarlo
+
+  // Relaciones
+  citas Cita[]
+
+  @@map("servicios")
+  @@index([activo])
+}
+
+// ============================================================
+// MODELO: Cita
+// Reserva de cita en el taller
+// Es el modelo central del sistema
+// ============================================================
+
+model Cita {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Fecha y hora de la cita
+  fecha     DateTime // Fecha + hora exacta de la cita
+  fechaFin  DateTime? @map("fecha_fin") // Calculado: fecha + duracionMin
+
+  // Estado
+  estado EstadoCita @default(PENDIENTE)
+
+  // Notas
+  notasCliente  String? @map("notas_cliente")  // El cliente puede añadir notas
+  notasTaller   String? @map("notas_taller")   // El taller añade notas internas
+
+  // Precio final (puede diferir del orientativo)
+  precioFinal Float? @map("precio_final")
+
+  // Relaciones
+  clienteId  Int      @map("cliente_id")
+  cliente    Cliente  @relation(fields: [clienteId], references: [id])
+
+  vehiculoId Int      @map("vehiculo_id")
+  vehiculo   Vehiculo @relation(fields: [vehiculoId], references: [id])
+
+  servicioId Int      @map("servicio_id")
+  servicio   Servicio @relation(fields: [servicioId], references: [id])
+
+  notificaciones NotificacionEnviada[]
+  historial      HistorialCita[]
+
+  @@map("citas")
+  @@index([fecha])
+  @@index([estado])
+  @@index([clienteId])
+  @@index([vehiculoId])
+  @@index([servicioId])
+  // Índice compuesto para consultas de calendario
+  @@index([fecha, estado])
+}
+
+// ============================================================
+// MODELO: HistorialCita
+// Auditoría de cambios de estado en una cita
+// RGPD: trazabilidad de cambios
+// ============================================================
+
+model HistorialCita {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  estadoAnterior EstadoCita  @map("estado_anterior")
+  estadoNuevo    EstadoCita  @map("estado_nuevo")
+  motivo         String?     // Motivo del cambio (ej: "Cliente llamó para cancelar")
+  cambiadoPor    String      @map("cambiado_por") // "CLIENTE" | "ADMIN" | "SISTEMA"
+
+  citaId Int  @map("cita_id")
+  cita   Cita @relation(fields: [citaId], references: [id], onDelete: Cascade)
+
+  @@map("historial_citas")
+  @@index([citaId])
+}
+
+// ============================================================
+// MODELO: BloqueoCalendario
+// Fechas o franjas horarias bloqueadas por el admin
+// ============================================================
+
+model BloqueoCalendario {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Rango de bloqueo
+  fechaInicio DateTime @map("fecha_inicio")
+  fechaFin    DateTime @map("fecha_fin")
+
+  // Si es true bloquea todo el día, si es false solo la franja
+  todoDia Boolean @default(true) @map("todo_dia")
+
+  tipo   TipoBloqueo
+  motivo String?     // Descripción libre del motivo
+
+  // El admin puede editar o eliminar bloqueos
+  activo Boolean @default(true)
+
+  @@map("bloqueos_calendario")
+  @@index([fechaInicio, fechaFin])
+  @@index([activo])
+}
+
+// ============================================================
+// MODELO: ConfiguracionTaller
+// Configuración global del taller (singleton)
+// Solo 1 registro — el admin lo edita desde el panel
+// ============================================================
+
+model ConfiguracionTaller {
+  id        Int      @id @default(1) // Siempre ID=1, solo hay una config
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Datos del taller
+  nombre    String @default("Neumáticos Ramos")
+  telefono  String @default("")
+  email     String @default("")
+  direccion String @default("")
+  ciudad    String @default("Granada")
+  codigoPostal String @default("") @map("codigo_postal")
+  web       String @default("")
+
+  // Horario semanal (en formato JSON)
+  // Ejemplo: { "lunes": { "manana": ["09:00","14:00"], "tarde": ["16:00","20:30"] }, ... }
+  horarioSemanal Json @map("horario_semanal")
+
+  // Duración mínima entre citas en minutos
+  intervaloMinutos Int @default(30) @map("intervalo_minutos")
+
+  // Máximo de citas por franja horaria
+  maxCitasPorSlot Int @default(1) @map("max_citas_por_slot")
+
+  // Canales de notificación activos
+  whatsappActivo Boolean @default(true) @map("whatsapp_activo")
+  emailActivo    Boolean @default(false) @map("email_activo")
+
+  // Número de WhatsApp del taller y del admin
+  whatsappTaller String @default("") @map("whatsapp_taller")
+  whatsappAdmin  String @default("") @map("whatsapp_admin")
+
+  @@map("configuracion_taller")
+}
+
+// ============================================================
+// MODELO: ConfiguracionNotificaciones
+// Qué notificaciones están activas (editables por el admin)
+// ============================================================
+
+model ConfiguracionNotificaciones {
+  id        Int      @id @default(1)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Al cliente
+  confirmacionCita   Boolean @default(true)  @map("confirmacion_cita")
+  recordatorio24h    Boolean @default(true)  @map("recordatorio_24h")
+  recordatorio2h     Boolean @default(false) @map("recordatorio_2h")
+  cancelacionCita    Boolean @default(true)  @map("cancelacion_cita")
+
+  // Al propietario/admin
+  nuevaCitaAdmin     Boolean @default(true)  @map("nueva_cita_admin")
+  resumenDiarioAdmin Boolean @default(true)  @map("resumen_diario_admin")
+  cancelacionAdmin   Boolean @default(true)  @map("cancelacion_admin")
+
+  // Plantillas de mensajes (editables por admin)
+  plantillaConfirmacion String @default("") @map("plantilla_confirmacion")
+  plantillaRecordatorio String @default("") @map("plantilla_recordatorio")
+  plantillaCancelacion  String @default("") @map("plantilla_cancelacion")
+
+  @@map("configuracion_notificaciones")
+}
+
+// ============================================================
+// MODELO: NotificacionEnviada
+// Log de todas las notificaciones enviadas
+// RGPD: trazabilidad de comunicaciones
+// ============================================================
+
+model NotificacionEnviada {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tipo    TipoNotificacion
+  canal   CanalNotificacion
+
+  // Estado del envío
+  enviado   Boolean   @default(false)
+  enviadoAt DateTime? @map("enviado_at")
+  error     String?   // Mensaje de error si falló
+
+  // Relaciones opcionales
+  clienteId Int?  @map("cliente_id")
+  cliente   Cliente? @relation(fields: [clienteId], references: [id])
+
+  citaId    Int?  @map("cita_id")
+  cita      Cita? @relation(fields: [citaId], references: [id])
+
+  @@map("notificaciones_enviadas")
+  @@index([clienteId])
+  @@index([citaId])
+  @@index([enviado])
+  @@index([createdAt])
+}
+
+// ============================================================
+// MODELO: LogAccesoAdmin
+// Auditoría de accesos al panel de administración
+// RGPD: obligatorio registrar accesos a datos personales
+// ============================================================
+
+model LogAccesoAdmin {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Supabase user id del admin
+  adminId   String @map("admin_id")
+
+  accion    String  // "LOGIN" | "LOGOUT" | "VER_CLIENTE" | "EDITAR_CITA" etc.
+  ip        String? // IP desde donde se accedió
+  userAgent String? @map("user_agent")
+  exito     Boolean @default(true)
+  detalle   String? // Información adicional
+
+  @@map("logs_acceso_admin")
+  @@index([adminId])
+  @@index([createdAt])
+  @@index([accion])
+}

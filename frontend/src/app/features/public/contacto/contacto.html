@@ -1,0 +1,115 @@
+<section class="contacto-header" aria-label="Contacto">
+  <div class="header-info">
+    <h1 class="header-titulo">Neumáticos Ramos</h1>
+    <span class="estado-badge"
+      [class.abierto]="estadoAbierto"
+      [class.cerrado]="!estadoAbierto">
+      <span class="estado-dot" aria-hidden="true"></span>
+      {{ estadoAbierto ? 'Ahora abierto' : 'Ahora cerrado' }}
+    </span>
+  </div>
+</section>
+
+<!-- MAPA -->
+<div class="mapa-placeholder" role="img" aria-label="Mapa de ubicación del taller">
+  <div class="mapa-pin">
+    <div class="pin-icon" aria-hidden="true"></div>
+    <span class="pin-label">Neumáticos Ramos</span>
+  </div>
+</div>
+
+<!-- ACCIONES -->
+<div class="acciones-section">
+  <div class="acciones-grid">
+    <a href="tel:+34912345678" class="accion-btn"
+       aria-label="Llamar al taller">
+      <span class="accion-icon" aria-hidden="true">📞</span>
+      <span class="accion-label">Llamar</span>
+    </a>
+    <a href="https://wa.me/34912345678" class="accion-btn"
+       aria-label="Enviar WhatsApp">
+      <span class="accion-icon" aria-hidden="true">💬</span>
+      <span class="accion-label">WhatsApp</span>
+    </a>
+    <a href="https://maps.google.com/?q=Avenida+de+Poniente,+39,+Granada"
+       target="_blank" class="accion-btn accion-btn-primary"
+       aria-label="Cómo llegar al taller">
+      <span class="accion-icon" aria-hidden="true">🗺️</span>
+      <span class="accion-label">Llegar</span>
+    </a>
+  </div>
+
+  @if (config()) {
+    <div class="direccion-card">
+      <span aria-hidden="true">📍</span>
+      <div class="direccion-info">
+        <p class="direccion-label">Ubicación</p>
+        <p class="direccion-valor">
+          {{ config()!.direccion }}<br>
+          {{ config()!.ciudad }}
+        </p>
+        <button class="btn-copiar"
+          (click)="copiarDireccion()"
+          aria-label="Copiar dirección">
+          Copiar dirección 📋
+        </button>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- HORARIO -->
+<section class="horario-section" aria-label="Horario de apertura">
+  <h2 class="section-titulo">Horario de Apertura</h2>
+  <table class="horario-tabla" aria-label="Horario semanal">
+    <tbody>
+      <tr>
+        <td>Lunes – Viernes</td>
+        <td>9:00 – 14:00 · 16:00 – 20:30</td>
+      </tr>
+      <tr>
+        <td>Sábados</td>
+        <td>9:00 – 13:00</td>
+      </tr>
+      <tr class="cerrado">
+        <td>Domingos y festivos</td>
+        <td>Cerrado</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- CONTACTO INFO -->
+@if (config()) {
+  <section class="info-section" aria-label="Información de contacto">
+    <div class="info-item">
+      <span aria-hidden="true">✉️</span>
+      <div>
+        <p class="info-label">Email</p>
+        <a [href]="'mailto:' + config()!.email" class="info-valor link">
+          {{ config()!.email }}
+        </a>
+      </div>
+    </div>
+    <div class="info-item">
+      <span aria-hidden="true">🌐</span>
+      <div>
+        <p class="info-label">Web</p>
+        <a [href]="'https://' + config()!.web"
+           target="_blank" class="info-valor link">
+          {{ config()!.web }}
+        </a>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- PAGOS -->
+<section class="pagos-section" aria-label="Formas de pago">
+  <p class="pagos-label">Formas de pago aceptadas</p>
+  <div class="pagos-grid">
+    <span class="pago-badge">💳 Visa</span>
+    <span class="pago-badge">💳 Mastercard</span>
+    <span class="pago-badge">💵 Efectivo</span>
+  </div>
+</section>

@@ -1,0 +1,114 @@
+@if (cargando()) {
+  <div class="loading" role="status">
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Cargando dashboard...</p>
+  </div>
+}
+
+@if (error()) {
+  <div class="error-box" role="alert">⚠️ {{ error() }}</div>
+}
+
+@if (data() && !cargando()) {
+
+  <!-- STATS -->
+  <div class="stats-grid" role="region" aria-label="Estadisticas del dia">
+    <div class="stat-card">
+      <span class="stat-icon" aria-hidden="true">📅</span>
+      <p class="stat-label">Citas hoy</p>
+      <p class="stat-value">{{ data()!.stats.citasHoy }}</p>
+    </div>
+    <div class="stat-card warning">
+      <span class="stat-icon" aria-hidden="true">⏳</span>
+      <p class="stat-label">Pendientes</p>
+      <p class="stat-value">{{ data()!.stats.pendientesHoy }}</p>
+    </div>
+    <div class="stat-card success">
+      <span class="stat-icon" aria-hidden="true">✅</span>
+      <p class="stat-label">Confirmadas</p>
+      <p class="stat-value">{{ data()!.stats.confirmadas }}</p>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon" aria-hidden="true">👥</span>
+      <p class="stat-label">Total clientes</p>
+      <p class="stat-value">{{ data()!.stats.totalClientes }}</p>
+    </div>
+  </div>
+
+  <!-- CITAS DE HOY -->
+  <div class="section-card" role="region" aria-label="Citas de hoy">
+    <div class="card-header">
+      <div>
+        <h2 class="card-titulo">Citas de Hoy</h2>
+        <p class="card-subtitulo">{{ data()!.fecha }}</p>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-pending">
+          <span class="badge-dot" aria-hidden="true"></span>
+          {{ data()!.stats.pendientesHoy }} pendientes
+        </span>
+        <span class="badge badge-confirmed">
+          <span class="badge-dot" aria-hidden="true"></span>
+          {{ data()!.stats.confirmadas }} confirmadas
+        </span>
+      </div>
+    </div>
+
+    @if (data()!.citasHoy.length === 0) {
+      <div class="empty-state">
+        <span aria-hidden="true">📭</span>
+        <p>No hay citas para hoy</p>
+      </div>
+    }
+
+    @for (cita of data()!.citasHoy; track cita.id) {
+      <div class="cita-row" role="row">
+        <div class="cita-hora" aria-label="Hora de la cita">
+          {{ formatHora(cita.fecha) }}
+        </div>
+        <div class="cita-info">
+          <p class="cita-cliente">{{ cita.cliente.nombre }}</p>
+          <p class="cita-servicio">
+            {{ cita.servicio.nombre }} ·
+            {{ cita.vehiculo.marca }} {{ cita.vehiculo.modelo ?? '' }} ·
+            <strong>{{ cita.vehiculo.matricula }}</strong>
+          </p>
+          <p class="cita-telefono">📞 {{ cita.cliente.telefono }}</p>
+        </div>
+        <span [class]="'badge ' + getClaseEstado(cita.estado)">
+          <span class="badge-dot" aria-hidden="true"></span>
+          {{ getEtiquetaEstado(cita.estado) }}
+        </span>
+        <div class="cita-acciones">
+          @if (cita.estado === 'PENDIENTE') {
+            <button class="btn-accion confirmar"
+              (click)="confirmarCita(cita.id)"
+              aria-label="Confirmar cita">✓</button>
+          }
+          <button class="btn-accion cancelar"
+            (click)="cancelarCita(cita.id)"
+            [disabled]="cita.estado === 'CANCELADA'"
+            aria-label="Cancelar cita">✕</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- BLOQUEOS PROXIMOS -->
+  @if (data()!.bloqueosProximos.length > 0) {
+    <div class="section-card" role="region" aria-label="Fechas bloqueadas proximas">
+      <div class="card-header">
+        <h2 class="card-titulo">Fechas Bloqueadas</h2>
+        <a routerLink="/admin/calendario" class="btn-ver-todos">Gestionar →</a>
+      </div>
+      @for (bloqueo of data()!.bloqueosProximos; track bloqueo.id) {
+        <div class="bloqueo-row">
+          <span class="bloqueo-fecha">{{ formatFecha(bloqueo.fechaInicio) }}</span>
+          <span class="bloqueo-motivo">{{ bloqueo.motivo }}</span>
+          <span class="badge badge-cancelled">Todo el dia</span>
+        </div>
+      }
+    </div>
+  }
+
+}

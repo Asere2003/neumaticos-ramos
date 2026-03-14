@@ -1,0 +1,60 @@
+<section class="servicios-header" aria-label="Nuestros servicios">
+  <h1 class="screen-title">Nuestros Servicios</h1>
+  <p class="screen-subtitle">
+    Selecciona un servicio para reservar tu cita
+  </p>
+</section>
+
+@if (cargando()) {
+  <div class="loading" role="status" aria-live="polite">
+    <span class="loading-dot"></span>
+    <span class="loading-dot"></span>
+    <span class="loading-dot"></span>
+  </div>
+}
+
+<div class="servicios-list">
+  @for (servicio of servicios(); track servicio.id) {
+    <article class="servicio-card">
+
+      <div class="servicio-card-top">
+        <div class="servicio-icon-wrap" aria-hidden="true">
+          <span class="servicio-icon">{{ iconos[servicio.tipo] }}</span>
+        </div>
+        <div class="servicio-info">
+          <h2 class="servicio-nombre">{{ servicio.nombre }}</h2>
+          <p class="servicio-desc">{{ servicio.descripcion }}</p>
+        </div>
+      </div>
+
+      <div class="servicio-meta">
+        @if (servicio.precioDesde) {
+          <span class="meta-item">
+            💰 Desde {{ servicio.precioDesde }}€
+          </span>
+        }
+        <span class="meta-item">
+          ⏱️ ~{{ servicio.duracionMin }} min
+        </span>
+      </div>
+
+      <ul class="servicio-detalles" aria-label="Detalles del servicio">
+        @for (detalle of detalles[servicio.tipo]; track detalle) {
+          <li class="servicio-detalle">
+            <span aria-hidden="true">✓</span>
+            {{ detalle }}
+          </li>
+        }
+      </ul>
+
+      <a
+        [routerLink]="['/reservar']"
+        [queryParams]="{ servicio: servicio.tipo }"
+        class="btn-reservar"
+        [attr.aria-label]="'Reservar ' + servicio.nombre">
+        Reservar este servicio
+      </a>
+
+    </article>
+  }
+</div>

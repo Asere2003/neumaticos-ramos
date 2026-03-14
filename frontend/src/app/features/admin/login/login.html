@@ -1,0 +1,78 @@
+<div class="login-screen" role="main" aria-label="Acceso al panel de administracion">
+
+  <div class="login-logo">
+    <span class="logo-sub">Panel de Administracion</span>
+    <span class="logo-nombre">Ramos</span>
+    <span class="logo-badge">Acceso Restringido</span>
+  </div>
+
+  <div class="login-card">
+    <h1 class="login-titulo">Iniciar Sesion</h1>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+
+      <div class="form-group">
+        <label class="form-label" for="email">
+          Email <span aria-label="obligatorio">*</span>
+        </label>
+        <input class="form-input" type="email" id="email"
+          formControlName="email"
+          placeholder="admin@neumaticosramos.com"
+          autocomplete="email"
+          [class.error]="getError('email')">
+        @if (getError('email')) {
+          <span class="form-error" role="alert">{{ getError('email') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">
+          Contrasena <span aria-label="obligatorio">*</span>
+        </label>
+        <div class="input-wrap">
+          <input class="form-input" id="password"
+            formControlName="password"
+            [type]="mostrarPass() ? 'text' : 'password'"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            [class.error]="getError('password')">
+          <button type="button" class="toggle-pass"
+            (click)="togglePass()"
+            [attr.aria-label]="mostrarPass() ? 'Ocultar contrasena' : 'Mostrar contrasena'">
+            {{ mostrarPass() ? '🙈' : '👁️' }}
+          </button>
+        </div>
+        @if (getError('password')) {
+          <span class="form-error" role="alert">{{ getError('password') }}</span>
+        }
+        <button type="button" class="btn-forgot"
+          (click)="recuperarPassword()"
+          aria-label="Recuperar contrasena">
+          ¿Olvidaste tu contrasena?
+        </button>
+      </div>
+
+      @if (error()) {
+        <div class="error-box" role="alert">
+          ⚠️ {{ error() }}
+        </div>
+      }
+
+      <button type="submit" class="btn-login"
+        [disabled]="cargando()"
+        aria-label="Acceder al panel">
+        @if (cargando()) {
+          ⏳ Accediendo...
+        } @else {
+          🔐 Acceder al Panel
+        }
+      </button>
+
+    </form>
+
+    <p class="login-seguridad">
+      🛡️ Conexion cifrada SSL · Sesion de 8 horas
+    </p>
+  </div>
+
+</div>

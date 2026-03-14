@@ -1,0 +1,108 @@
+<div class="admin-wrapper">
+
+  <!-- SIDEBAR DESKTOP -->
+  <aside class="sidebar" role="navigation" aria-label="Panel de navegacion">
+    <div class="sidebar-logo">
+      <span class="logo-sub">Panel Admin</span>
+      <span class="logo-nombre">Ramos</span>
+      <span class="logo-badge">Propietario</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.ruta) {
+        <a [routerLink]="item.ruta"
+           routerLinkActive="active"
+           class="nav-item"
+           [attr.aria-label]="item.label">
+          <span class="nav-icon" aria-hidden="true">{{ item.icono }}</span>
+          <span class="nav-text">{{ item.label }}</span>
+          @if (item.badge) {
+            <span class="nav-badge" [attr.aria-label]="item.badge + ' pendientes'">
+              {{ item.badge }}
+            </span>
+          }
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="admin-perfil">
+        <div class="admin-avatar" aria-hidden="true">MR</div>
+        <div class="admin-info">
+          <span class="admin-nombre">Manuel Ramos</span>
+          <span class="admin-rol">Propietario</span>
+        </div>
+        <button class="btn-logout"
+          (click)="logout()"
+          aria-label="Cerrar sesion">
+          🚪
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="admin-main">
+
+    <!-- TOPBAR -->
+    <header class="topbar" role="banner">
+      <button class="btn-menu-mobile"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuAbierto()"
+        aria-label="Abrir menu">
+        ☰
+      </button>
+      <div class="topbar-right">
+        <button class="topbar-notif" aria-label="Notificaciones">
+          🔔
+          <span class="notif-dot" aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO -->
+    <main class="main-content" id="main-content">
+      <router-outlet />
+    </main>
+
+  </div>
+
+  <!-- MENU MOBILE -->
+  @if (menuAbierto()) {
+    <div class="mobile-overlay" (click)="toggleMenu()" aria-hidden="true"></div>
+    <div class="mobile-menu" role="dialog" aria-label="Menu de navegacion">
+      <div class="mobile-menu-header">
+        <span class="logo-nombre" style="color:var(--primitive-yellow-500)">Ramos Admin</span>
+        <button (click)="toggleMenu()" aria-label="Cerrar menu">✕</button>
+      </div>
+      <nav>
+        @for (item of navItems; track item.ruta) {
+          <a [routerLink]="item.ruta"
+             routerLinkActive="active"
+             class="nav-item"
+             (click)="toggleMenu()">
+            <span class="nav-icon" aria-hidden="true">{{ item.icono }}</span>
+            <span class="nav-text">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+      <button class="btn-logout-mobile" (click)="logout()">
+        🚪 Cerrar Sesion
+      </button>
+    </div>
+  }
+
+</div>
+
+<!-- BOTTOM NAV MOBILE -->
+<nav class="mobile-bottom-nav" aria-label="Navegacion admin">
+  @for (item of navItems.slice(0, 5); track item.ruta) {
+    <a [routerLink]="item.ruta"
+       routerLinkActive="active"
+       class="mobile-nav-item"
+       [attr.aria-label]="item.label">
+      <span class="mobile-nav-icon" aria-hidden="true">{{ item.icono }}</span>
+      <span class="mobile-nav-label">{{ item.label }}</span>
+    </a>
+  }
+</nav>

@@ -1,0 +1,93 @@
+@if (cargando()) {
+  <div class="loading" role="status" aria-live="polite">
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <p>Cargando tu cita...</p>
+  </div>
+}
+
+@if (error()) {
+  <div class="error-state" role="alert">
+    <span class="error-icon" aria-hidden="true">😔</span>
+    <h1 class="error-title">Cita no encontrada</h1>
+    <p class="error-desc">{{ error() }}</p>
+    <a routerLink="/" class="btn-volver">Volver al inicio</a>
+  </div>
+}
+
+@if (cita() && !cargando()) {
+  <!-- HERO CONFIRMACIÓN -->
+  <div class="confirm-hero" aria-label="Confirmación de cita">
+    <div class="confirm-icon" aria-hidden="true">✅</div>
+    <h1 class="confirm-titulo">¡Cita Confirmada!</h1>
+    <p class="confirm-subtitulo">
+      Te llamaremos para confirmar.<br>¡Te esperamos en el taller!
+    </p>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="confirm-card" role="region" aria-label="Resumen de tu cita">
+    <p class="confirm-card-titulo">Resumen de tu cita</p>
+
+    <div class="confirm-detalle">
+      <span class="detalle-icon" aria-hidden="true">🔧</span>
+      <div>
+        <p class="detalle-label">Servicio</p>
+        <p class="detalle-valor">{{ cita()!.servicio.nombre }}</p>
+      </div>
+    </div>
+
+    <div class="confirm-detalle">
+      <span class="detalle-icon" aria-hidden="true">📅</span>
+      <div>
+        <p class="detalle-label">Fecha y hora</p>
+        <p class="detalle-valor">{{ formatearFecha(cita()!.fecha) }}</p>
+      </div>
+    </div>
+
+    <div class="confirm-detalle">
+      <span class="detalle-icon" aria-hidden="true">🚗</span>
+      <div>
+        <p class="detalle-label">Vehículo</p>
+        <p class="detalle-valor">
+          {{ cita()!.vehiculo.marca }}
+          {{ cita()!.vehiculo.modelo ?? '' }} ·
+          <strong>{{ cita()!.vehiculo.matricula }}</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="confirm-detalle">
+      <span class="detalle-icon" aria-hidden="true">📍</span>
+      <div>
+        <p class="detalle-label">Taller</p>
+        <p class="detalle-valor">Avenida de Poniente, 39, Granada</p>
+      </div>
+    </div>
+
+    <div class="confirm-detalle">
+      <span class="detalle-icon" aria-hidden="true">⏱️</span>
+      <div>
+        <p class="detalle-label">Duración estimada</p>
+        <p class="detalle-valor">~{{ cita()!.servicio.duracionMin }} minutos</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCIONES -->
+  <div class="confirm-acciones">
+    <button class="btn-accion btn-primary"
+      (click)="anadirCalendario()"
+      aria-label="Añadir al calendario">
+      📅 Añadir al Calendario
+    </button>
+    <button class="btn-accion btn-whatsapp"
+      (click)="compartirWhatsApp()"
+      aria-label="Compartir por WhatsApp">
+      💬 Compartir por WhatsApp
+    </button>
+    <a routerLink="/" class="btn-accion btn-ghost"
+      aria-label="Volver al inicio">
+      ← Volver al Inicio
+    </a>
+  </div>
+}

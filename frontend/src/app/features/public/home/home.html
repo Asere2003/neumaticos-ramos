@@ -1,0 +1,155 @@
+<!-- HERO -->
+<section class="hero" aria-label="Bienvenida">
+  <div class="hero-badge" aria-hidden="true">🔧 Taller Profesional Armilla</div>
+
+  <h1 class="hero-title">
+    Neumáticos<br><span>Ramos</span>
+  </h1>
+
+  <p class="hero-subtitle">
+    Neumáticos · Alineación · Equilibrado · Llantas
+  </p>
+
+  <div class="hero-status" role="status" aria-live="polite">
+    <span
+      class="hero-status-dot"
+      [class.open]="estaAbierto"
+      aria-hidden="true">
+    </span>
+    <span>{{ horarioHoy }}</span>
+  </div>
+
+  <div class="hero-ctas">
+    <a routerLink="/reservar" class="btn btn-accent btn-full btn-lg"
+       aria-label="Pedir cita en Neumáticos Ramos">
+      📅 Pedir Cita Previa
+    </a>
+    <a routerLink="/servicios" class="btn btn-ghost btn-full"
+       aria-label="Ver todos los servicios">
+      Ver Servicios
+    </a>
+  </div>
+
+  <a href="tel:+34912345678" class="hero-emergency"
+     aria-label="Servicio urgente por pinchazo">
+    <span aria-hidden="true">🚨</span>
+    <span><strong>¿Pinchazo urgente?</strong> Llámanos ahora</span>
+    <span aria-hidden="true">→</span>
+  </a>
+</section>
+
+<!-- MARCAS -->
+<div class="brands-strip" aria-label="Marcas distribuidoras">
+  <p class="brands-label">Distribuidores Oficiales</p>
+  <div class="brands-scroll" role="list">
+    <span class="brand-item" role="listitem">Michelin</span>
+    <span class="brand-item" role="listitem">Kleber</span>
+    <span class="brand-item" role="listitem">BFGoodrich</span>
+    <span class="brand-item" role="listitem">Kormoran</span>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<section class="services-section" aria-label="Nuestros servicios">
+  <div class="section-header">
+    <h2 class="section-title">Servicios</h2>
+    <a routerLink="/servicios" class="section-link">Ver todos</a>
+  </div>
+
+  <div class="services-grid" role="list">
+    @for (servicio of servicios(); track servicio.id) {
+      <div class="service-card" role="listitem" tabindex="0">
+        <span class="service-icon" aria-hidden="true">
+          {{ iconos[servicio.tipo] }}
+        </span>
+        <span class="service-name">{{ servicio.nombre }}</span>
+        <span class="service-desc">{{ servicio.descripcion }}</span>
+        @if (servicio.precioDesde) {
+          <span class="service-price">Desde {{ servicio.precioDesde }}€</span>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- POR QUÉ ELEGIRNOS -->
+<section class="why-section" aria-label="Por qué elegirnos">
+  <h2 class="section-title white">¿Por Qué Ramos?</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <span class="why-icon">⚡</span>
+      <span class="why-title">Servicio Express</span>
+      <span class="why-desc">Cambio en menos de 1 hora</span>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">🏆</span>
+      <span class="why-title">Técnicos Cert.</span>
+      <span class="why-desc">+20 años de experiencia</span>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">💰</span>
+      <span class="why-title">Precio Justo</span>
+      <span class="why-desc">Sin costes ocultos</span>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">📅</span>
+      <span class="why-title">Cita Online</span>
+      <span class="why-desc">Reserva en 30 segundos</span>
+    </div>
+  </div>
+</section>
+
+<!-- HORARIO -->
+<section class="schedule-section" aria-label="Horario de apertura">
+  <h2 class="section-title">Horario</h2>
+  <table class="schedule-table" aria-label="Horario semanal">
+    <tbody>
+      <tr>
+        <td>Lunes – Viernes</td>
+        <td>9:00 – 14:00 · 16:00 – 20:30</td>
+      </tr>
+      <tr>
+        <td>Sábados</td>
+        <td>9:00 – 13:00</td>
+      </tr>
+      <tr class="closed">
+        <td>Domingos</td>
+        <td>Cerrado</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- CONTACTO -->
+<section class="contact-section" aria-label="Contacto">
+  <div class="contact-actions">
+    <a href="tel:+34912345678" class="contact-btn"
+       aria-label="Llamar al taller">
+      <span class="contact-btn-icon">📞</span>
+      <span class="contact-btn-label">Llamar</span>
+    </a>
+    <a href="https://wa.me/34912345678" class="contact-btn"
+       aria-label="WhatsApp">
+      <span class="contact-btn-icon">💬</span>
+      <span class="contact-btn-label">WhatsApp</span>
+    </a>
+    <a routerLink="/contacto" class="contact-btn contact-btn-primary"
+       aria-label="Cómo llegar">
+      <span class="contact-btn-icon">🗺️</span>
+      <span class="contact-btn-label">Llegar</span>
+    </a>
+  </div>
+
+  @if (configuracion()) {
+    <div class="address-card">
+      <span aria-hidden="true">📍</span>
+      <div>
+        <p class="address-label">Dirección</p>
+        <p class="address-value">
+          {{ configuracion()!.direccion }}<br>
+          {{ configuracion()!.ciudad }}
+        </p>
+      </div>
+    </div>
+  }
+</section>

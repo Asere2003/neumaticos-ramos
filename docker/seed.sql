@@ -1,0 +1,7 @@
+INSERT INTO configuracion_taller (id, nombre, telefono, email, direccion, ciudad, codigo_postal, web, horario_semanal, intervalo_minutos, max_citas_por_slot, whatsapp_activo, email_activo, whatsapp_taller, whatsapp_admin, updated_at)
+VALUES (1, 'Neumáticos Ramos', '91 234 56 78', 'info@neumaticosramos.com', 'Avenida de Poniente, 39', 'Granada', '18100', 'www.neumaticosramos.com', '{"lunes":{"manana":["09:00","14:00"],"tarde":["16:00","20:30"]},"sabado":{"manana":["09:00","13:00"],"tarde":null},"domingo":null}', 30, 1, true, false, '+34912345678', '+34612345678', NOW())
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO configuracion_notificaciones (id, confirmacion_cita, recordatorio_24h, recordatorio_2h, cancelacion_cita, nueva_cita_admin, resumen_diario_admin, cancelacion_admin, plantilla_confirmacion, plantilla_recordatorio, plantilla_cancelacion, updated_at)
+VALUES (1, true, true, false, true, true, true, true, 'Hola [NOMBRE], tu cita está confirmada el [FECHA] a las [HORA]. Servicio: [SERVICIO]. Matrícula: [MATRICULA].', 'Hola [NOMBRE], te recordamos tu cita mañana [FECHA] a las [HORA].', 'Hola [NOMBRE], tu cita del [FECHA] a las [HORA] ha sido cancelada.', NOW())
+ON CONFLICT (id) DO NOTHING;

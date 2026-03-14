@@ -1,0 +1,314 @@
+<!-- HEADER -->
+<div class="reserva-header">
+  <button class="btn-back" (click)="volver()"
+    [attr.aria-label]="pasoActual() > 1 ? 'Volver al paso anterior' : 'Volver'"
+    [routerLink]="pasoActual() === 1 ? ['/servicios'] : null">
+    ←
+  </button>
+  <h1 class="reserva-title">Reservar Cita</h1>
+  <button class="btn-close" routerLink="/" aria-label="Cerrar reserva">✕</button>
+</div>
+
+<!-- PROGRESO -->
+<div class="progreso" role="progressbar"
+  [attr.aria-valuenow]="progreso()"
+  aria-valuemin="0" aria-valuemax="100">
+  <div class="progreso-info">
+    <span class="progreso-paso">Paso {{ pasoActual() }} de 3</span>
+    <span class="progreso-pct">{{ progreso() }}% completado</span>
+  </div>
+  <div class="progreso-dots">
+    <div class="progreso-dot" [class.done]="pasoActual() > 1" [class.active]="pasoActual() === 1"></div>
+    <div class="progreso-dot" [class.done]="pasoActual() > 2" [class.active]="pasoActual() === 2"></div>
+    <div class="progreso-dot" [class.active]="pasoActual() === 3"></div>
+  </div>
+</div>
+
+<!-- PASO 1: SERVICIO -->
+@if (pasoActual() === 1) {
+  <div class="paso-content">
+    <h2 class="paso-titulo">¿Qué servicio necesitas?</h2>
+    <p class="paso-desc">Selecciona el servicio para tu vehículo.</p>
+
+    <div class="servicios-opciones" role="radiogroup" aria-label="Seleccionar servicio">
+      @for (servicio of servicios(); track servicio.id) {
+        <label class="servicio-opcion"
+          [class.selected]="servicioSeleccionado()?.id === servicio.id"
+          (click)="seleccionarServicio(servicio)"
+          (keydown.enter)="seleccionarServicio(servicio)"
+          tabindex="0"
+          [attr.role]="'radio'"
+          [attr.aria-checked]="servicioSeleccionado()?.id === servicio.id">
+          <div class="radio-circle" aria-hidden="true"></div>
+          <span class="servicio-opcion-icon" aria-hidden="true">{{ iconos[servicio.tipo] }}</span>
+          <div class="servicio-opcion-info">
+            <span class="servicio-opcion-nombre">{{ servicio.nombre }}</span>
+            <span class="servicio-opcion-meta">
+              @if (servicio.precioDesde) { Desde {{ servicio.precioDesde }}€ · }
+              ~{{ servicio.duracionMin }} min
+            </span>
+          </div>
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="paso-footer">
+    <button class="btn-siguiente" (click)="irPaso2()"
+      [disabled]="!servicioSeleccionado()"
+      aria-label="Ir al siguiente paso">
+      Siguiente →
+    </button>
+  </div>
+}
+
+<!-- PASO 2: FECHA Y HORA -->
+@if (pasoActual() === 2) {
+  <div class="paso-content">
+    <h2 class="paso-titulo">¿Cuándo vienes?</h2>
+    <p class="paso-desc">Elige el día y la hora que más te convenga.</p>
+
+    <!-- CALENDARIO -->
+    <div class="calendario">
+      <p class="calendario-label">Selecciona el día</p>
+      <div class="dias-scroll" role="listbox" aria-label="Días disponibles">
+        @for (dia of diasCalendario(); track dia.fecha) {
+          <button class="dia-btn"
+            [class.active]="fechaSeleccionada() === dia.fecha"
+            [class.disabled]="dia.esDomingo"
+            [disabled]="dia.esDomingo"
+            (click)="seleccionarFecha(dia.fecha)"
+            [attr.aria-label]="dia.nombre + ' ' + dia.numero + ' de ' + dia.mes"
+            [attr.aria-selected]="fechaSeleccionada() === dia.fecha">
+            <span class="dia-nombre">{{ dia.nombre }}</span>
+            <span class="dia-numero">{{ dia.numero }}</span>
+            <span class="dia-mes">{{ dia.mes }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- SLOTS -->
+    @if (cargandoSlots()) {
+      <div class="slots-loading" role="status" aria-live="polite">
+        Cargando horarios disponibles...
+      </div>
+    }
+
+    @if (!cargandoSlots() && fechaSeleccionada()) {
+
+      @if (slotsManana().length > 0) {
+        <div class="slots-section">
+          <p class="slots-label">🌅 Mañana · 9:00 – 14:00</p>
+          <div class="slots-grid" role="listbox" aria-label="Horarios de mañana">
+            @for (slot of slotsManana(); track slot) {
+              <button class="slot-btn"
+                [class.selected]="horaSeleccionada() === slot"
+                (click)="seleccionarHora(slot)"
+                [attr.aria-label]="slot + ' disponible'"
+                [attr.aria-selected]="horaSeleccionada() === slot">
+                {{ slot }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (slotsTarde().length > 0) {
+        <div class="slots-section">
+          <p class="slots-label">🌆 Tarde · 16:00 – 20:30</p>
+          <div class="slots-grid" role="listbox" aria-label="Horarios de tarde">
+            @for (slot of slotsTarde(); track slot) {
+              <button class="slot-btn"
+                [class.selected]="horaSeleccionada() === slot"
+                (click)="seleccionarHora(slot)"
+                [attr.aria-label]="slot + ' disponible'"
+                [attr.aria-selected]="horaSeleccionada() === slot">
+                {{ slot }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (slotsDelDia().length === 0 && !cargandoSlots()) {
+        <div class="no-slots" role="alert">
+          😔 No hay horarios disponibles para este día.
+          Por favor selecciona otro día.
+        </div>
+      }
+    }
+  </div>
+
+  <div class="paso-footer">
+    <button class="btn-siguiente"
+      (click)="irPaso3()"
+      [disabled]="!fechaSeleccionada() || !horaSeleccionada()"
+      aria-label="Ir al siguiente paso">
+      Siguiente →
+    </button>
+  </div>
+}
+
+<!-- PASO 3: DATOS -->
+@if (pasoActual() === 3) {
+  <div class="paso-content">
+    <h2 class="paso-titulo">¡Casi listo!</h2>
+    <p class="paso-desc">Solo necesitamos tus datos de contacto y los de tu vehículo.</p>
+
+    <form [formGroup]="form" (ngSubmit)="confirmar()" novalidate>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Datos de contacto</legend>
+
+        <div class="form-group">
+          <label class="form-label" for="nombre">
+            Nombre completo <span aria-label="obligatorio">*</span>
+          </label>
+          <input class="form-input" type="text" id="nombre"
+            formControlName="nombre"
+            placeholder="Ej: Juan García"
+            autocomplete="name"
+            [class.error]="getError('nombre')">
+          @if (getError('nombre')) {
+            <span class="form-error" role="alert">{{ getError('nombre') }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="telefono">
+            Teléfono <span aria-label="obligatorio">*</span>
+          </label>
+          <input class="form-input" type="tel" id="telefono"
+            formControlName="telefono"
+            placeholder="612 345 678"
+            autocomplete="tel"
+            inputmode="tel"
+            [class.error]="getError('telefono')">
+          @if (getError('telefono')) {
+            <span class="form-error" role="alert">{{ getError('telefono') }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email (opcional)</label>
+          <input class="form-input" type="email" id="email"
+            formControlName="email"
+            placeholder="juan@email.com"
+            autocomplete="email"
+            [class.error]="getError('email')">
+          @if (getError('email')) {
+            <span class="form-error" role="alert">{{ getError('email') }}</span>
+          }
+        </div>
+      </fieldset>
+
+      <div class="divider" role="separator" aria-hidden="true"></div>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Datos del vehículo</legend>
+
+        <div class="form-group">
+          <label class="form-label" for="marca">
+            Marca <span aria-label="obligatorio">*</span>
+          </label>
+          <input class="form-input" type="text" id="marca"
+            formControlName="marca"
+            placeholder="Ej: Volkswagen"
+            [class.error]="getError('marca')">
+          @if (getError('marca')) {
+            <span class="form-error" role="alert">{{ getError('marca') }}</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="modelo">Modelo</label>
+          <input class="form-input" type="text" id="modelo"
+            formControlName="modelo"
+            placeholder="Ej: Golf GTI">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" for="matricula">
+              Matrícula <span aria-label="obligatorio">*</span>
+            </label>
+            <input class="form-input" type="text" id="matricula"
+              formControlName="matricula"
+              placeholder="1234 ABC"
+              style="text-transform:uppercase"
+              [class.error]="getError('matricula')">
+            @if (getError('matricula')) {
+              <span class="form-error" role="alert">{{ getError('matricula') }}</span>
+            }
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="anio">Año</label>
+            <input class="form-input" type="number" id="anio"
+              formControlName="anio"
+              placeholder="2020"
+              inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="medida">Medida del neumático</label>
+          <input class="form-input" type="text" id="medida"
+            formControlName="medida"
+            placeholder="Ej: 205/55 R16">
+          <p class="form-hint">
+            Encuéntrala en el lateral del neumático actual
+          </p>
+        </div>
+      </fieldset>
+
+      <div class="divider" role="separator" aria-hidden="true"></div>
+
+      <!-- RGPD -->
+      <div class="rgpd-section">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="aceptaTerminos"
+            class="checkbox-input"
+            [class.error]="getError('aceptaTerminos')">
+          <span>
+            Acepto los <a href="#" class="link">términos de servicio</a>
+            y la <a href="#" class="link">política de privacidad</a>
+            <span aria-label="obligatorio"> *</span>
+          </span>
+        </label>
+        @if (getError('aceptaTerminos')) {
+          <span class="form-error" role="alert">{{ getError('aceptaTerminos') }}</span>
+        }
+
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="aceptaMarketing"
+            class="checkbox-input">
+          <span>Acepto recibir comunicaciones del taller</span>
+        </label>
+      </div>
+
+      @if (error()) {
+        <div class="error-box" role="alert">
+          ⚠️ {{ error() }}
+        </div>
+      }
+
+    </form>
+  </div>
+
+  <div class="paso-footer">
+    <button class="btn-siguiente btn-confirmar"
+      (click)="confirmar()"
+      [disabled]="cargando()"
+      aria-label="Confirmar cita">
+      @if (cargando()) {
+        ⏳ Confirmando...
+      } @else {
+        ✅ Confirmar Cita
+      }
+    </button>
+    <p class="terminos-aviso">
+      Al confirmar aceptas nuestros términos y política de privacidad
+    </p>
+  </div>
+}
