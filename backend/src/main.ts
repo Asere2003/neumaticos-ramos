@@ -6,6 +6,11 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 
 async function bootstrap() {
+   console.log('ENV CHECK:', {
+    SUPABASE_URL: process.env.SUPABASE_URL ? 'OK' : 'MISSING',
+    SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY ? 'OK' : 'MISSING',
+    SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET ? 'OK' : 'MISSING',
+  });
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
