@@ -1,1 +1,110 @@
-<p>citas works!</p>
+<!-- HEADER -->
+<div class="page-header">
+  <div>
+    <h1 class="page-titulo">Citas</h1>
+    <p class="page-subtitulo">Gestiona todas las reservas del taller</p>
+  </div>
+</div>
+
+<!-- FILTROS -->
+<div class="filtros">
+  <div class="filter-tabs">
+    @for (estado of estados; track estado.valor) {
+      <button class="filter-tab"
+        [class.active]="filtroEstado() === estado.valor"
+        (click)="filtroEstado.set(estado.valor); onFiltroChange()"
+        [attr.aria-pressed]="filtroEstado() === estado.valor">
+        {{ estado.label }}
+      </button>
+    }
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon" aria-hidden="true">🔍</span>
+    <input class="search-input" type="search"
+      placeholder="Buscar cliente, matricula..."
+      [ngModel]="filtroBusqueda()"
+      (ngModelChange)="filtroBusqueda.set($event); onFiltroChange()"
+      aria-label="Buscar citas">
+  </div>
+</div>
+
+<!-- LOADING -->
+@if (cargando()) {
+  <div class="loading" role="status">
+    <div class="spinner" aria-hidden="true"></div>
+  </div>
+}
+
+<!-- ERROR -->
+@if (error()) {
+  <div class="error-box" role="alert">⚠️ {{ error() }}</div>
+}
+
+<!-- TABLA -->
+@if (!cargando() && citas().length === 0) {
+  <div class="empty-state">
+    <span aria-hidden="true">📭</span>
+    <p>No hay citas con estos filtros</p>
+  </div>
+}
+
+@if (!cargando() && citas().length > 0) {
+  <div class="citas-card">
+    <div class="table-header">
+      <span class="th">Hora</span>
+      <span class="th">Cliente</span>
+      <span class="th">Servicio</span>
+      <span class="th">Vehiculo</span>
+      <span class="th">Estado</span>
+      <span class="th">Acciones</span>
+    </div>
+
+    @for (cita of citas(); track cita.id) {
+      <div class="table-row">
+        <div class="td">
+          <p class="td-hora">{{ formatHora(cita.fecha) }}</p>
+          <p class="td-fecha">{{ formatFecha(cita.fecha) }}</p>
+        </div>
+        <div class="td">
+          <p class="td-nombre">{{ cita.cliente.nombre }}</p>
+          <p class="td-tel">{{ cita.cliente.telefono }}</p>
+        </div>
+        <div class="td">
+          <p class="td-servicio">{{ cita.servicio.nombre }}</p>
+          <p class="td-precio">
+            @if (cita.precioFinal) { € {{ cita.precioFinal }} }
+            @else if (cita.servicio.precioDesde) { Desde {{ cita.servicio.precioDesde }}€ }
+          </p>
+        </div>
+        <div class="td">
+          <p class="td-matricula">{{ cita.vehiculo.matricula }}</p>
+          <p class="td-vehiculo">{{ cita.vehiculo.marca }} {{ cita.vehiculo.modelo ?? '' }}</p>
+        </div>
+        <div class="td">
+          <span [class]="'badge ' + getClaseEstado(cita.estado)">
+            <span class="badge-dot" aria-hidden="true"></span>
+            {{ getEtiquetaEstado(cita.estado) }}
+          </span>
+        </div>
+        <div class="td td-acciones">
+          @if (cita.estado === 'PENDIENTE') {
+            <button class="btn-accion confirmar"
+              (click)="confirmar(cita.id)"
+              aria-label="Confirmar cita">✓</button>
+          }
+          @if (cita.estado === 'CONFIRMADA') {
+            <button class="btn-accion completar"
+              (click)="completar(cita.id)"
+              aria-label="Marcar como completada">⭐</button>
+          }
+          @if (cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA') {
+            <button class="btn-accion cancelar"
+              (click)="cancelar(cita.id)"
+              aria-label="Cancelar cita">✕</button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

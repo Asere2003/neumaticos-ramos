@@ -1,1 +1,108 @@
-<p>servicios works!</p>
+<div class="page-header">
+  <div>
+    <h1 class="page-titulo">Servicios</h1>
+    <p class="page-subtitulo">Edita precios, duracion y disponibilidad</p>
+  </div>
+  <button class="btn-guardar-todos"
+    (click)="cargarServicios()"
+    aria-label="Recargar servicios">
+    🔄 Recargar
+  </button>
+</div>
+
+@if (exito()) {
+  <div class="exito-box" role="status">✅ {{ exito() }}</div>
+}
+@if (error()) {
+  <div class="error-box" role="alert">⚠️ {{ error() }}</div>
+}
+
+@if (cargando()) {
+  <div class="loading" role="status">
+    <div class="spinner" aria-hidden="true"></div>
+  </div>
+}
+
+<div class="servicios-lista">
+  @for (servicio of servicios(); track servicio.id) {
+    <div class="servicio-card" [class.inactivo]="!servicio.activo">
+
+      <div class="servicio-header">
+        <span class="servicio-icono" aria-hidden="true">
+          {{ iconos[servicio.tipo] }}
+        </span>
+        <h2 class="servicio-nombre">{{ servicio.tipo }}</h2>
+        <div class="servicio-estado">
+          <span class="estado-label">
+            {{ servicio.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+          <label class="toggle" [attr.aria-label]="'Activar o desactivar ' + servicio.nombre">
+            <input type="checkbox"
+              [checked]="servicio.activo"
+              (change)="toggleActivo(servicio)">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="servicio-body">
+        <div class="form-group">
+          <label class="form-label" [for]="'nombre-' + servicio.id">
+            Nombre del servicio
+          </label>
+          <input class="form-input"
+            [id]="'nombre-' + servicio.id"
+            type="text"
+            [(ngModel)]="servicio.nombre">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" [for]="'desc-' + servicio.id">
+            Descripcion
+          </label>
+          <input class="form-input"
+            [id]="'desc-' + servicio.id"
+            type="text"
+            [(ngModel)]="servicio.descripcion">
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label" [for]="'precio-' + servicio.id">
+              Precio desde (€)
+            </label>
+            <input class="form-input"
+              [id]="'precio-' + servicio.id"
+              type="number"
+              min="0"
+              [(ngModel)]="servicio.precioDesde">
+          </div>
+          <div class="form-group">
+            <label class="form-label" [for]="'duracion-' + servicio.id">
+              Duracion (min)
+            </label>
+            <input class="form-input"
+              [id]="'duracion-' + servicio.id"
+              type="number"
+              min="15"
+              step="15"
+              [(ngModel)]="servicio.duracionMin">
+          </div>
+        </div>
+
+        <button class="btn-guardar"
+          (click)="actualizar(servicio)"
+          [disabled]="guardando()"
+          aria-label="Guardar cambios del servicio">
+          @if (guardando()) {
+            ⏳ Guardando...
+          } @else {
+            💾 Guardar Cambios
+          }
+        </button>
+      </div>
+
+    </div>
+  }
+</div>

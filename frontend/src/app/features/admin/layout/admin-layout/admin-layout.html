@@ -45,20 +45,35 @@
   <div class="admin-main">
 
     <!-- TOPBAR -->
-    <header class="topbar" role="banner">
-      <button class="btn-menu-mobile"
-        (click)="toggleMenu()"
-        [attr.aria-expanded]="menuAbierto()"
-        aria-label="Abrir menu">
-        ☰
-      </button>
-      <div class="topbar-right">
-        <button class="topbar-notif" aria-label="Notificaciones">
-          🔔
-          <span class="notif-dot" aria-hidden="true"></span>
-        </button>
-      </div>
-    </header>
+<header class="topbar" role="banner">
+  <button class="btn-menu-mobile"
+    (click)="toggleMenu()"
+    [attr.aria-expanded]="menuAbierto()"
+    aria-label="Abrir menu">
+    ☰
+  </button>
+
+  <!-- BREADCRUMB -->
+  <nav class="topbar-nav" aria-label="Navegacion">
+    <a routerLink="/admin/dashboard" class="topbar-home" aria-label="Ir al dashboard">
+      🏠
+    </a>
+    <span class="topbar-sep" aria-hidden="true">›</span>
+    <span class="topbar-current">{{ getTituloActual() }}</span>
+  </nav>
+
+  <div class="topbar-right">
+    <button class="topbar-notif" aria-label="Notificaciones">
+      🔔
+      <span class="notif-dot" aria-hidden="true"></span>
+    </button>
+    <button class="btn-logout-top"
+      (click)="logout()"
+      aria-label="Cerrar sesion">
+      🚪 Salir
+    </button>
+  </div>
+</header>
 
     <!-- CONTENIDO -->
     <main class="main-content" id="main-content">

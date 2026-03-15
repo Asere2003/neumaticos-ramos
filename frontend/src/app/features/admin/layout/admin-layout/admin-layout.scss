@@ -332,3 +332,52 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.topbar-home {
+  font-size: 1.1rem;
+  text-decoration: none;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  transition: background 0.15s ease;
+
+  &:hover { background: #F4F5F8; }
+}
+
+.topbar-sep {
+  color: #C2C8D4;
+  font-size: 1rem;
+}
+
+.topbar-current {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111318;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.btn-logout-top {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  background: #F4F5F8;
+  border: 1px solid #E8EBF0;
+  border-radius: 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555C6B;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+
+  &:hover { background: #FFE3E3; color: #C92A2A; border-color: #FFB3B3; }
+}

@@ -1,1 +1,148 @@
-<p>calendario works!</p>
+<div class="page-header">
+  <div>
+    <h1 class="page-titulo">Calendario</h1>
+    <p class="page-subtitulo">Gestiona la disponibilidad del taller</p>
+  </div>
+</div>
+
+@if (exito()) {
+  <div class="exito-box" role="status">✅ {{ exito() }}</div>
+}
+@if (error()) {
+  <div class="error-box" role="alert">⚠️ {{ error() }}</div>
+}
+
+<div class="calendario-grid">
+
+  <!-- CALENDARIO VISUAL -->
+  <div class="cal-card">
+    <div class="cal-header">
+      <button class="cal-nav" (click)="mesAnterior()" aria-label="Mes anterior">‹</button>
+      <span class="cal-mes">{{ mesActual().format('MMMM YYYY') | titlecase }}</span>
+      <button class="cal-nav" (click)="mesSiguiente()" aria-label="Mes siguiente">›</button>
+    </div>
+
+    <div class="cal-dias-semana">
+      @for (dia of ['Lun','Mar','Mie','Jue','Vie','Sab','Dom']; track dia) {
+        <span class="cal-dia-header">{{ dia }}</span>
+      }
+    </div>
+
+    <div class="cal-dias">
+      @for (dia of diasMes(); track $index) {
+        @if (dia === null) {
+          <div class="cal-dia-vacio"></div>
+        } @else {
+          <div class="cal-dia"
+            [class.hoy]="dia.esHoy"
+            [class.domingo]="dia.esDomingo"
+            [class.bloqueado]="dia.bloqueado">
+            {{ dia.numero }}
+          </div>
+        }
+      }
+    </div>
+
+    <div class="cal-leyenda">
+      <span class="leyenda-item">
+        <span class="leyenda-dot hoy" aria-hidden="true"></span> Hoy
+      </span>
+      <span class="leyenda-item">
+        <span class="leyenda-dot bloqueado" aria-hidden="true"></span> Bloqueado
+      </span>
+      <span class="leyenda-item">
+        <span class="leyenda-dot domingo" aria-hidden="true"></span> Cerrado
+      </span>
+    </div>
+  </div>
+
+  <!-- PANEL DERECHO -->
+  <div class="panel-derecho">
+
+    <!-- FORM BLOQUEO -->
+    <div class="bloqueo-form-card">
+      <h2 class="card-titulo">Bloquear Fecha</h2>
+
+      <div class="form-group">
+        <label class="form-label" for="fecha-inicio">
+          Fecha inicio <span>*</span>
+        </label>
+        <input class="form-input" type="date" id="fecha-inicio"
+          [(ngModel)]="nuevoBloqueo.fechaInicio"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="fecha-fin">
+          Fecha fin (opcional)
+        </label>
+        <input class="form-input" type="date" id="fecha-fin"
+          [(ngModel)]="nuevoBloqueo.fechaFin">
+        <p class="form-hint">Si es un solo dia deja este campo vacio</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="tipo-bloqueo">
+          Tipo <span>*</span>
+        </label>
+        <select class="form-input" id="tipo-bloqueo"
+          [(ngModel)]="nuevoBloqueo.tipo">
+          @for (tipo of tiposBloqueo; track tipo.valor) {
+            <option [value]="tipo.valor">{{ tipo.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="motivo">Motivo</label>
+        <input class="form-input" type="text" id="motivo"
+          [(ngModel)]="nuevoBloqueo.motivo"
+          placeholder="Ej: Navidad, Vacaciones verano...">
+      </div>
+
+      <button class="btn-bloquear"
+        (click)="crearBloqueo()"
+        [disabled]="guardando() || !nuevoBloqueo.fechaInicio"
+        aria-label="Bloquear fecha seleccionada">
+        @if (guardando()) {
+          ⏳ Guardando...
+        } @else {
+          🚫 Bloquear Fecha
+        }
+      </button>
+    </div>
+
+    <!-- BLOQUEOS ACTIVOS -->
+    <div class="bloqueos-lista-card">
+      <h2 class="card-titulo">Bloqueos Activos</h2>
+
+      @if (cargando()) {
+        <div class="loading-small" role="status">Cargando...</div>
+      }
+
+      @if (!cargando() && bloqueos().length === 0) {
+        <p class="empty-msg">No hay fechas bloqueadas</p>
+      }
+
+      @for (bloqueo of bloqueos(); track bloqueo.id) {
+        <div class="bloqueo-item">
+          <div class="bloqueo-info">
+            <span class="bloqueo-fecha">
+              {{ formatFecha(bloqueo.fechaInicio) }}
+              @if (bloqueo.fechaFin !== bloqueo.fechaInicio) {
+                → {{ formatFecha(bloqueo.fechaFin) }}
+              }
+            </span>
+            <span class="bloqueo-motivo">{{ bloqueo.motivo || bloqueo.tipo }}</span>
+          </div>
+          <button class="btn-eliminar"
+            (click)="eliminarBloqueo(bloqueo.id)"
+            aria-label="Eliminar bloqueo">
+            🗑️
+          </button>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

@@ -3,10 +3,24 @@
 </a>
 
 <header class="mobile-header" role="banner">
-  <div class="header-logo" aria-label="Neumáticos Ramos">
-    <span class="logo-top">Neumáticos</span>
-    <span class="logo-bottom">Ramos</span>
+  <div class="header-logo" aria-label="Neumaticos Ramos">
+    <a routerLink="/" aria-label="Ir al inicio">
+      <span class="logo-top">Neumaticos</span>
+      <span class="logo-bottom">Ramos</span>
+    </a>
   </div>
+
+  <!-- NAV DESKTOP -->
+  <nav class="header-nav-desktop" aria-label="Navegacion principal">
+    <a routerLink="/" routerLinkActive="nav-active"
+       [routerLinkActiveOptions]="{exact: true}"
+       class="nav-link">Inicio</a>
+    <a routerLink="/servicios" routerLinkActive="nav-active"
+       class="nav-link">Servicios</a>
+    <a routerLink="/contacto" routerLinkActive="nav-active"
+       class="nav-link">Contacto</a>
+  </nav>
+
   <div class="header-actions">
     <a href="tel:+34912345678" class="header-btn-call" aria-label="Llamar al taller">
       📞 Llamar
@@ -17,26 +31,43 @@
   </div>
 </header>
 
+<!-- NAV MOBILE -->
+<nav class="mobile-nav" role="navigation" aria-label="Navegacion mobile">
+  <a routerLink="/" routerLinkActive="mobile-nav-active"
+     [routerLinkActiveOptions]="{exact: true}"
+     class="mobile-nav-item" aria-label="Inicio">
+    <span aria-hidden="true">🏠</span>
+    <span>Inicio</span>
+  </a>
+  <a routerLink="/servicios" routerLinkActive="mobile-nav-active"
+     class="mobile-nav-item" aria-label="Servicios">
+    <span aria-hidden="true">🔧</span>
+    <span>Servicios</span>
+  </a>
+  <a routerLink="/reservar" routerLinkActive="mobile-nav-active"
+     class="mobile-nav-item " aria-label="Reservar cita">
+    <span aria-hidden="true">📅</span>
+    <span>Reservar</span>
+  </a>
+  <a routerLink="/contacto" routerLinkActive="mobile-nav-active"
+     class="mobile-nav-item" aria-label="Contacto">
+    <span aria-hidden="true">📍</span>
+    <span>Contacto</span>
+  </a>
+</nav>
+
 <main id="main-content">
   <router-outlet />
 </main>
 
 <footer class="footer" role="contentinfo">
-  <div class="footer-logo">Neumáticos <span>Ramos</span></div>
+  <div class="footer-logo">Neumaticos <span>Ramos</span></div>
   <p class="footer-tagline">Tu taller de confianza en Armilla</p>
   <div class="footer-links">
     <a href="#" class="footer-link">Aviso Legal</a>
     <a href="#" class="footer-link">Privacidad</a>
     <a href="#" class="footer-link">Cookies</a>
   </div>
-  <p class="footer-copyright">© 2024 Neumáticos Ramos S.L.</p>
+  <p class="footer-copyright">© 2024 Neumaticos Ramos S.L.</p>
 </footer>
 
-<div class="sticky-bottom" role="navigation" aria-label="Acciones principales">
-  <a href="tel:+34912345678" class="btn btn-outline" aria-label="Llamar al taller">
-    📞 Llamar
-  </a>
-  <a routerLink="/reservar" class="btn btn-accent" aria-label="Reservar cita">
-    📅 Reservar Cita
-  </a>
-</div>

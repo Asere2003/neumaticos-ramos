@@ -1,1 +1,172 @@
-<p>clientes works!</p>
+<div class="page-header">
+  <div>
+    <h1 class="page-titulo">Clientes</h1>
+    <p class="page-subtitulo">Historial y datos de todos los clientes</p>
+  </div>
+</div>
+
+<!-- BUSQUEDA -->
+<div class="search-wrap">
+  <span class="search-icon" aria-hidden="true">🔍</span>
+  <input class="search-input"
+    type="search"
+    placeholder="Buscar por nombre, telefono o matricula..."
+    [(ngModel)]="busqueda"
+    (ngModelChange)="cargarClientes()"
+    aria-label="Buscar clientes">
+</div>
+
+@if (error()) {
+  <div class="error-box" role="alert">⚠️ {{ error() }}</div>
+}
+
+<div class="clientes-layout">
+
+  <!-- LISTA -->
+  <div class="clientes-lista">
+    @if (cargando()) {
+      <div class="loading" role="status">
+        <div class="spinner" aria-hidden="true"></div>
+      </div>
+    }
+
+    @if (!cargando() && clientes().length === 0) {
+      <div class="empty-state">
+        <span aria-hidden="true">👥</span>
+        <p>No se encontraron clientes</p>
+      </div>
+    }
+
+    @for (cliente of clientes(); track cliente.id) {
+      <div class="cliente-item"
+        [class.selected]="clienteSeleccionado()?.id === cliente.id"
+        (click)="seleccionarCliente(cliente)"
+        tabindex="0"
+        (keydown.enter)="seleccionarCliente(cliente)"
+        role="button"
+        [attr.aria-label]="'Ver detalle de ' + cliente.nombre">
+        <div class="cliente-avatar">{{ getIniciales(cliente.nombre) }}</div>
+        <div class="cliente-info">
+          <span class="cliente-nombre">{{ cliente.nombre }}</span>
+          <span class="cliente-tel">{{ cliente.telefono }}</span>
+        </div>
+        <div class="cliente-stats">
+          <span class="cliente-citas">{{ cliente._count.citas }} citas</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- DETALLE -->
+  @if (clienteSeleccionado()) {
+    <div class="cliente-detalle" role="region" aria-label="Detalle del cliente">
+
+      <div class="detalle-header">
+        <div class="detalle-avatar">
+          {{ getIniciales(clienteSeleccionado()!.nombre) }}
+        </div>
+        <div class="detalle-info">
+          <h2 class="detalle-nombre">{{ clienteSeleccionado()!.nombre }}</h2>
+          <p class="detalle-fecha">
+            Cliente desde {{ formatFecha(clienteSeleccionado()!.createdAt) }}
+          </p>
+        </div>
+        <button class="btn-cerrar" (click)="cerrarDetalle()" aria-label="Cerrar detalle">✕</button>
+      </div>
+
+      <!-- STATS -->
+      <div class="detalle-stats">
+        <div class="detalle-stat">
+          <span class="stat-num">{{ clienteSeleccionado()!._count.citas }}</span>
+          <span class="stat-lbl">Visitas</span>
+        </div>
+        <div class="detalle-stat">
+          <span class="stat-num">
+            {{ getTotalGasto(clienteSeleccionado()!.citas) }}€
+          </span>
+          <span class="stat-lbl">Total gastado</span>
+        </div>
+        <div class="detalle-stat">
+          <span class="stat-num">{{ clienteSeleccionado()!.vehiculos.length }}</span>
+          <span class="stat-lbl">Vehiculos</span>
+        </div>
+      </div>
+
+      <!-- CONTACTO -->
+      <div class="detalle-section">
+        <h3 class="section-titulo">Contacto</h3>
+        <div class="contacto-item">
+          <span aria-hidden="true">📞</span>
+          <a [href]="'tel:' + clienteSeleccionado()!.telefono" class="link">
+            {{ clienteSeleccionado()!.telefono }}
+          </a>
+        </div>
+        @if (clienteSeleccionado()!.email) {
+          <div class="contacto-item">
+            <span aria-hidden="true">✉️</span>
+            <a [href]="'mailto:' + clienteSeleccionado()!.email" class="link">
+              {{ clienteSeleccionado()!.email }}
+            </a>
+          </div>
+        }
+        <div class="acciones-contacto">
+          <a [href]="'tel:' + clienteSeleccionado()!.telefono"
+             class="btn-contacto">📞 Llamar</a>
+          <a [href]="'https://wa.me/34' + clienteSeleccionado()!.telefono"
+             target="_blank"
+             class="btn-contacto">💬 WhatsApp</a>
+        </div>
+      </div>
+
+      <!-- VEHICULOS -->
+      @if (clienteSeleccionado()!.vehiculos.length > 0) {
+        <div class="detalle-section">
+          <h3 class="section-titulo">Vehiculos</h3>
+          @for (v of clienteSeleccionado()!.vehiculos; track v.id) {
+            <div class="vehiculo-item">
+              <span aria-hidden="true">🚗</span>
+              <div>
+                <p class="vehiculo-nombre">{{ v.marca }} {{ v.modelo ?? '' }}</p>
+                <p class="vehiculo-mat">{{ v.matricula }}</p>
+                @if (v.medidaNeumaticoDelantero) {
+                  <p class="vehiculo-medida">{{ v.medidaNeumaticoDelantero }}</p>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- HISTORIAL -->
+      @if (clienteSeleccionado()!.citas.length > 0) {
+        <div class="detalle-section">
+          <h3 class="section-titulo">Historial de Servicios</h3>
+          @for (cita of clienteSeleccionado()!.citas; track cita.id) {
+            <div class="historial-item">
+              <div class="historial-info">
+                <span class="historial-servicio">{{ cita.servicio.nombre }}</span>
+                <span class="historial-fecha">
+                  {{ formatFecha(cita.fecha) }} · {{ formatHora(cita.fecha) }}
+                </span>
+              </div>
+              @if (cita.precioFinal) {
+                <span class="historial-precio">{{ cita.precioFinal }}€</span>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- RGPD -->
+      <div class="detalle-section">
+        <button class="btn-eliminar-rgpd"
+          (click)="eliminarCliente(clienteSeleccionado()!.id)"
+          aria-label="Eliminar datos del cliente por RGPD">
+          🗑️ Eliminar datos (RGPD)
+        </button>
+      </div>
+
+    </div>
+  }
+
+</div>

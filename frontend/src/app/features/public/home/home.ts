@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ConfiguracionTaller, Servicio } from '../../../core/models/cita.model';
+import { Meta, Title } from '@angular/platform-browser';
 
 import { ApiService } from '../../../core/services/api.service';
 import { CommonModule } from '@angular/common';
@@ -25,9 +26,19 @@ export class Home implements OnInit {
     LLANTAS:     '🔩',
   };
 
-  constructor(private api: ApiService) {}
+  constructor(
+      private readonly api: ApiService,
+      private readonly title: Title,
+      private readonly meta: Meta
+  ) {}
 
   ngOnInit() {
+    this.title.setTitle('Neumaticos Ramos — Taller de Neumaticos en Armilla, Granada');
+    this.meta.updateTag({ name: 'description', content: 'Taller de neumaticos en Armilla, Granada. Cambio de neumaticos, alineacion, equilibrado y llantas. Reserva cita online.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Neumaticos Ramos — Armilla, Granada' });
+    this.meta.updateTag({ property: 'og:description', content: 'Taller profesional en Armilla. Neumaticos Michelin, Kleber, BFGoodrich. Reserva tu cita online.' });
+    this.meta.updateTag({ name: 'keywords', content: 'neumaticos Armilla, taller neumaticos Granada, cambio neumaticos, alineacion direccion' });
+
     this.api.getServicios().subscribe(s => this.servicios.set(s));
     this.api.getConfiguracion().subscribe(c => this.configuracion.set(c));
   }

@@ -1,1 +1,175 @@
-<p>notificaciones works!</p>
+<div class="page-header">
+  <div>
+    <h1 class="page-titulo">Notificaciones</h1>
+    <p class="page-subtitulo">Configura los mensajes automaticos al cliente y al taller</p>
+  </div>
+</div>
+
+@if (exito()) {
+  <div class="exito-box" role="status">✅ {{ exito() }}</div>
+}
+@if (error()) {
+  <div class="error-box" role="alert">⚠️ {{ error() }}</div>
+}
+
+@if (cargando()) {
+  <div class="loading" role="status">
+    <div class="spinner" aria-hidden="true"></div>
+  </div>
+}
+
+@if (config() && !cargando()) {
+  <div class="notif-grid">
+
+    <!-- AL CLIENTE -->
+    <div class="notif-card">
+      <h2 class="card-titulo">📱 Al Cliente</h2>
+
+      <div class="notif-lista">
+        <div class="notif-row">
+          <div class="notif-info">
+            <p class="notif-titulo">Confirmacion de cita</p>
+            <p class="notif-desc">Se envia al confirmar la reserva</p>
+          </div>
+          <label class="toggle" aria-label="Activar confirmacion de cita">
+            <input type="checkbox" [(ngModel)]="config()!.confirmacionCita">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="notif-row">
+          <div class="notif-info">
+            <p class="notif-titulo">Recordatorio 24h antes</p>
+            <p class="notif-desc">Recuerda la cita el dia anterior</p>
+          </div>
+          <label class="toggle" aria-label="Activar recordatorio 24h">
+            <input type="checkbox" [(ngModel)]="config()!.recordatorio24h">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="notif-row">
+          <div class="notif-info">
+            <p class="notif-titulo">Recordatorio 2h antes</p>
+            <p class="notif-desc">Recordatorio de ultima hora</p>
+          </div>
+          <label class="toggle" aria-label="Activar recordatorio 2h">
+            <input type="checkbox" [(ngModel)]="config()!.recordatorio2h">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="notif-row">
+          <div class="notif-info">
+            <p class="notif-titulo">Cancelacion de cita</p>
+            <p class="notif-desc">Avisa si se cancela la reserva</p>
+          </div>
+          <label class="toggle" aria-label="Activar notificacion de cancelacion">
+            <input type="checkbox" [(ngModel)]="config()!.cancelacionCita">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- AL PROPIETARIO -->
+    <div class="notif-card">
+      <h2 class="card-titulo">🔔 Al Propietario</h2>
+
+      <div class="notif-lista">
+        <div class="notif-row">
+          <div class="notif-info">
+            <p class="notif-titulo">Nueva cita recibida</p>
+            <p class="notif-desc">Notificacion inmediata de reservas</p>
+          </div>
+          <label class="toggle" aria-label="Activar notificacion nueva cita">
+            <input type="checkbox" [(ngModel)]="config()!.nuevaCitaAdmin">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="notif-row">
+          <div class="notif-info">
+            <p class="notif-titulo">Resumen diario</p>
+            <p class="notif-desc">Informe de citas cada manana</p>
+          </div>
+          <label class="toggle" aria-label="Activar resumen diario">
+            <input type="checkbox" [(ngModel)]="config()!.resumenDiarioAdmin">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <div class="notif-row">
+          <div class="notif-info">
+            <p class="notif-titulo">Cancelacion de cliente</p>
+            <p class="notif-desc">Alerta cuando un cliente cancela</p>
+          </div>
+          <label class="toggle" aria-label="Activar alerta cancelacion">
+            <input type="checkbox" [(ngModel)]="config()!.cancelacionAdmin">
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANTILLAS -->
+    <div class="notif-card full-width">
+      <h2 class="card-titulo">📝 Plantillas de Mensajes</h2>
+      <p class="plantilla-hint">
+        Variables disponibles: [NOMBRE] [FECHA] [HORA] [SERVICIO] [MATRICULA]
+      </p>
+
+      <div class="form-group">
+        <label class="form-label" for="plantilla-confirmacion">
+          Mensaje de confirmacion
+        </label>
+        <textarea class="form-textarea" id="plantilla-confirmacion"
+          rows="5"
+          [(ngModel)]="config()!.plantillaConfirmacion">
+        </textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="plantilla-recordatorio">
+          Mensaje de recordatorio
+        </label>
+        <textarea class="form-textarea" id="plantilla-recordatorio"
+          rows="4"
+          [(ngModel)]="config()!.plantillaRecordatorio">
+        </textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="plantilla-cancelacion">
+          Mensaje de cancelacion
+        </label>
+        <textarea class="form-textarea" id="plantilla-cancelacion"
+          rows="4"
+          [(ngModel)]="config()!.plantillaCancelacion">
+        </textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GUARDAR -->
+  <div class="guardar-section">
+    <button class="btn-guardar"
+      (click)="guardar()"
+      [disabled]="guardando()"
+      aria-label="Guardar configuracion de notificaciones">
+      @if (guardando()) {
+        ⏳ Guardando...
+      } @else {
+        💾 Guardar Configuracion
+      }
+    </button>
+  </div>
+}

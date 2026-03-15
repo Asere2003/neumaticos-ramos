@@ -1,1 +1,147 @@
-<p>configuracion works!</p>
+<div class="page-header">
+  <div>
+    <h1 class="page-titulo">Configuracion</h1>
+    <p class="page-subtitulo">Datos del taller y ajustes generales</p>
+  </div>
+</div>
+
+@if (exito()) {
+  <div class="exito-box" role="status">✅ {{ exito() }}</div>
+}
+@if (error()) {
+  <div class="error-box" role="alert">⚠️ {{ error() }}</div>
+}
+
+@if (cargando()) {
+  <div class="loading" role="status">
+    <div class="spinner" aria-hidden="true"></div>
+  </div>
+}
+
+@if (config() && !cargando()) {
+  <div class="config-grid">
+
+    <!-- DATOS DEL TALLER -->
+    <div class="config-card">
+      <h2 class="card-titulo">🏪 Datos del Taller</h2>
+
+      <div class="form-group">
+        <label class="form-label" for="nombre">Nombre del taller</label>
+        <input class="form-input" type="text" id="nombre"
+          [(ngModel)]="config()!.nombre">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="direccion">Direccion</label>
+        <input class="form-input" type="text" id="direccion"
+          [(ngModel)]="config()!.direccion">
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="ciudad">Ciudad</label>
+          <input class="form-input" type="text" id="ciudad"
+            [(ngModel)]="config()!.ciudad">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cp">Codigo postal</label>
+          <input class="form-input" type="text" id="cp"
+            [(ngModel)]="config()!.codigoPostal">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="web">Web</label>
+        <input class="form-input" type="text" id="web"
+          [(ngModel)]="config()!.web">
+      </div>
+    </div>
+
+    <!-- CONTACTO -->
+    <div class="config-card">
+      <h2 class="card-titulo">📞 Contacto</h2>
+
+      <div class="form-group">
+        <label class="form-label" for="telefono">Telefono principal</label>
+        <input class="form-input" type="tel" id="telefono"
+          [(ngModel)]="config()!.telefono">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-input" type="email" id="email"
+          [(ngModel)]="config()!.email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="wa-taller">WhatsApp del taller</label>
+        <input class="form-input" type="tel" id="wa-taller"
+          [(ngModel)]="config()!.whatsappTaller"
+          placeholder="+34612345678">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="wa-admin">
+          WhatsApp del propietario
+          <span class="hint-inline">(recibe notificaciones)</span>
+        </label>
+        <input class="form-input" type="tel" id="wa-admin"
+          [(ngModel)]="config()!.whatsappAdmin"
+          placeholder="+34612345678">
+      </div>
+    </div>
+
+    <!-- CITAS -->
+    <div class="config-card full-width">
+      <h2 class="card-titulo">⚙️ Configuracion de Citas</h2>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label class="form-label" for="intervalo">
+            Intervalo entre citas (minutos)
+          </label>
+          <select class="form-input" id="intervalo"
+            [(ngModel)]="config()!.intervaloMinutos">
+            <option [value]="15">15 minutos</option>
+            <option [value]="30">30 minutos</option>
+            <option [value]="45">45 minutos</option>
+            <option [value]="60">60 minutos</option>
+          </select>
+          <p class="form-hint">
+            Cada cuanto tiempo aparece un slot disponible
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="max-citas">
+            Maximo de citas por slot
+          </label>
+          <select class="form-input" id="max-citas"
+            [(ngModel)]="config()!.maxCitasPorSlot">
+            <option [value]="1">1 cita por slot</option>
+            <option [value]="2">2 citas por slot</option>
+            <option [value]="3">3 citas por slot</option>
+          </select>
+          <p class="form-hint">
+            Cuantas citas pueden coincidir en el mismo horario
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GUARDAR -->
+  <div class="guardar-section">
+    <button class="btn-guardar"
+      (click)="guardar()"
+      [disabled]="guardando()"
+      aria-label="Guardar configuracion del taller">
+      @if (guardando()) {
+        ⏳ Guardando...
+      } @else {
+        💾 Guardar Configuracion
+      }
+    </button>
+  </div>
+}

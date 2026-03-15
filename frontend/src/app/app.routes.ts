@@ -74,9 +74,7 @@ export const routes: Routes = [
                 .then(m => m.Dashboard),
             title: 'Dashboard — Admin',
           },
-        ],
-      },
-      {
+           {
         path: 'citas',
         loadComponent: () =>
           import('./features/admin/citas/citas')
@@ -117,8 +115,10 @@ export const routes: Routes = [
           import('./features/admin/configuracion/configuracion')
             .then(m => m.Configuracion),
         title: 'Configuracion — Admin',
-      },
-    ],
+      }
+        ]
+      }
+    ]
   },
   {
     path: '**',

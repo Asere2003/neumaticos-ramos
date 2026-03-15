@@ -133,44 +133,69 @@
   }
 }
 
-.sticky-bottom {
-  position: sticky;
-  bottom: 0;
+// NAV DESKTOP
+.header-nav-desktop {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  justify-content: center;
+
+  @media (min-width: 768px) { display: flex; }
+}
+
+.nav-link {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: all 0.15s ease;
+
+  &:hover { color: white; background: rgba(255,255,255,0.1); }
+  &.nav-active { color: var(--primitive-yellow-500); }
+}
+
+// NAV MOBILE
+.mobile-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
   z-index: 100;
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  background: var(--color-bg-surface);
+  grid-template-columns: repeat(4, 1fr);
+  background: white;
   border-top: 1px solid var(--color-border-default);
   box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
-  padding: var(--space-3) var(--space-4);
-  gap: var(--space-3);
-  padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
 
-  .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    height: var(--touch-min);
-    border-radius: var(--radius-md);
-    font-family: var(--font-display);
-    font-weight: var(--weight-bold);
-    font-size: var(--text-sm);
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: all 0.15s ease;
+  @media (min-width: 768px) { display: none; }
+}
 
-    &:active { transform: scale(0.97); }
-  }
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: var(--space-3) 0;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 9px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color 0.15s ease;
+  min-height: var(--touch-min);
 
-  .btn-outline {
-    color: var(--color-text-brand);
-    border: 2px solid var(--color-border-brand);
-  }
+  span:first-child { font-size: 1.25rem; }
 
-  .btn-accent {
+  &.mobile-nav-active {
     background: var(--color-btn-accent-bg);
-    color: var(--color-btn-accent-text);
+    color: var(--color-text-brand) !important;
+    border-top: 3px solid var(--color-text-brand);
   }
 }

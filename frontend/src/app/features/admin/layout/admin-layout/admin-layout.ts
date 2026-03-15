@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Route, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector:    'app-admin-layout',
   standalone:  true,
-  imports:     [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports:     [CommonModule, RouterOutlet, RouterLink, RouterLink,  RouterLinkActive],
   templateUrl: './admin-layout.html',
   styleUrl:    './admin-layout.scss',
 })
@@ -25,7 +25,7 @@ export class AdminLayout {
     { ruta: '/admin/configuracion',  icono: '⚙️', label: 'Configuracion',   badge: null },
   ];
 
-  constructor(public auth: AuthService) {}
+  constructor(public auth: AuthService, private readonly router: Router,) {}
 
   async logout() {
     await this.auth.logout();
@@ -33,5 +33,11 @@ export class AdminLayout {
 
   toggleMenu() {
     this.menuAbierto.set(!this.menuAbierto());
+  }
+
+  getTituloActual(): string {
+    const url  = this.router.url;
+    const item = this.navItems.find(n => url.includes(n.ruta.split('/').pop()!));
+    return item?.label ?? 'Panel Admin';
   }
 }
