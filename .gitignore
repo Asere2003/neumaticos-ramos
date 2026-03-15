@@ -8,7 +8,6 @@
 .env.production
 .env.*
 backend/.env
-frontend/src/environments/environment.ts
 frontend/src/environments/environment.development.ts
 
 # ============================================================
