@@ -38,6 +38,7 @@ services:
       DIRECT_URL:           postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       SUPABASE_URL:         ${SUPABASE_URL}
       SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
+      RESEND_API_KEY:       ${RESEND_API_KEY}
       FRONTEND_URL:         http://localhost:4200
     ports:
       - "3000:3000"
