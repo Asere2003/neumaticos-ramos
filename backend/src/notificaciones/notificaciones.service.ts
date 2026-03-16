@@ -58,12 +58,12 @@ export class NotificacionesService {
     const enviadoWA = await this.enviarWhatsApp(cita.cliente.telefono, mensajeWA);
 
     // Email
-    if (cita.cliente.email) {
-      await this.email.enviarConfirmacionCita({
-        nombre, email: cita.cliente.email,
-        fecha, hora, servicio, matricula,
-      });
-    }
+    // if (cita.cliente.email) {
+    //   await this.email.enviarConfirmacionCita({
+    //     nombre, email: cita.cliente.email,
+    //     fecha, hora, servicio, matricula,
+    //   });
+    // }
 
     await this.prisma.notificacionEnviada.create({
       data: {

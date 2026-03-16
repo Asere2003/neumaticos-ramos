@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 
 import { CreateCitaDto } from './dto/create-cita.dto';
+import { EmailService } from 'src/mail/mail.service';
 import { EstadoCita } from '@prisma/client';
 import { NotificacionesService } from '../notificaciones/notificaciones.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -15,8 +16,9 @@ import dayjs from 'dayjs';
 export class CitasService {
 
   constructor(
-    private prisma: PrismaService,
-    private notificaciones: NotificacionesService,
+    private readonly prisma: PrismaService,
+    private readonly notificaciones: NotificacionesService,
+    private readonly email: EmailService,
   ) { }
 
   async crear(dto: CreateCitaDto) {
@@ -93,7 +95,19 @@ export class CitasService {
     });
 
     await this.notificaciones.enviarConfirmacionCita(cita);
-    await this.notificaciones.notificarNuevaCitaAdmin(cita);
+    
+    
+  // Email de recepcion al cliente
+  if (cita.cliente.email) {
+    await this.email.enviarRecepcionCita({
+      nombre:    cita.cliente.nombre,
+      email:     cita.cliente.email,
+      fecha:     dayjs(cita.fecha).format('DD/MM/YYYY'),
+      hora:      dayjs(cita.fecha).format('HH:mm'),
+      servicio:  cita.servicio.nombre,
+      matricula: cita.vehiculo.matricula,
+    });
+  }
 
     return cita;
   }
@@ -224,6 +238,16 @@ export class CitasService {
 
     if (nuevoEstado === EstadoCita.CONFIRMADA) {
       await this.notificaciones.enviarConfirmacionCita(citaActualizada);
+      if (citaActualizada.cliente.email) {
+        await this.email.enviarConfirmacionCita({
+          nombre: citaActualizada.cliente.nombre,
+          email: citaActualizada.cliente.email,
+          fecha: dayjs(citaActualizada.fecha).format('DD/MM/YYYY'),
+          hora: dayjs(citaActualizada.fecha).format('HH:mm'),
+          servicio: citaActualizada.servicio.nombre,
+          matricula: citaActualizada.vehiculo.matricula,
+        });
+      }
     }
     if (nuevoEstado === EstadoCita.CANCELADA) {
       await this.notificaciones.enviarCancelacionCita(citaActualizada);

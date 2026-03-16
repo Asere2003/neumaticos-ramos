@@ -18,16 +18,19 @@ require("dayjs/locale/es");
 const client_1 = require("@prisma/client");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const mail_service_1 = require("../mail/mail.service");
 const prisma_service_1 = require("../prisma/prisma.service");
 const dayjs_1 = __importDefault(require("dayjs"));
 dayjs_1.default.locale('es');
 let NotificacionesService = NotificacionesService_1 = class NotificacionesService {
     prisma;
     config;
+    email;
     logger = new common_1.Logger(NotificacionesService_1.name);
-    constructor(prisma, config) {
+    constructor(prisma, config, email) {
         this.prisma = prisma;
         this.config = config;
+        this.email = email;
     }
     interpolar(plantilla, vars) {
         return Object.entries(vars).reduce((text, [key, val]) => text.replaceAll(`[${key}]`, val), plantilla);
@@ -48,22 +51,24 @@ let NotificacionesService = NotificacionesService_1 = class NotificacionesServic
         });
         if (!config?.confirmacionCita)
             return;
-        const mensaje = this.interpolar(config.plantillaConfirmacion, {
-            NOMBRE: cita.cliente.nombre.split(' ')[0],
-            FECHA: (0, dayjs_1.default)(cita.fecha).format('dddd D [de] MMMM'),
-            HORA: (0, dayjs_1.default)(cita.fecha).format('HH:mm'),
-            SERVICIO: cita.servicio.nombre,
-            MATRICULA: cita.vehiculo.matricula,
+        const nombre = cita.cliente.nombre.split(' ')[0];
+        const fecha = (0, dayjs_1.default)(cita.fecha).format('dddd D [de] MMMM');
+        const hora = (0, dayjs_1.default)(cita.fecha).format('HH:mm');
+        const servicio = cita.servicio.nombre;
+        const matricula = cita.vehiculo.matricula;
+        const mensajeWA = this.interpolar(config.plantillaConfirmacion, {
+            NOMBRE: nombre, FECHA: fecha, HORA: hora,
+            SERVICIO: servicio, MATRICULA: matricula,
         });
-        const enviado = await this.enviarWhatsApp(cita.cliente.telefono, mensaje);
+        const enviadoWA = await this.enviarWhatsApp(cita.cliente.telefono, mensajeWA);
         await this.prisma.notificacionEnviada.create({
             data: {
                 tipo: client_1.TipoNotificacion.CONFIRMACION_CITA,
                 canal: client_1.CanalNotificacion.WHATSAPP,
                 clienteId: cita.clienteId,
                 citaId: cita.id,
-                enviado,
-                enviadoAt: enviado ? new Date() : null,
+                enviado: enviadoWA,
+                enviadoAt: enviadoWA ? new Date() : null,
             },
         });
     }
@@ -88,12 +93,13 @@ let NotificacionesService = NotificacionesService_1 = class NotificacionesServic
         });
         if (!config?.cancelacionCita)
             return;
-        const mensaje = this.interpolar(config.plantillaCancelacion, {
-            NOMBRE: cita.cliente.nombre.split(' ')[0],
-            FECHA: (0, dayjs_1.default)(cita.fecha).format('dddd D [de] MMMM'),
-            HORA: (0, dayjs_1.default)(cita.fecha).format('HH:mm'),
+        const nombre = cita.cliente.nombre.split(' ')[0];
+        const fecha = (0, dayjs_1.default)(cita.fecha).format('dddd D [de] MMMM');
+        const hora = (0, dayjs_1.default)(cita.fecha).format('HH:mm');
+        const mensajeWA = this.interpolar(config.plantillaCancelacion, {
+            NOMBRE: nombre, FECHA: fecha, HORA: hora,
         });
-        const enviado = await this.enviarWhatsApp(cita.cliente.telefono, mensaje);
+        const enviado = await this.enviarWhatsApp(cita.cliente.telefono, mensajeWA);
         await this.prisma.notificacionEnviada.create({
             data: {
                 tipo: client_1.TipoNotificacion.CANCELACION_CITA,
@@ -110,6 +116,7 @@ exports.NotificacionesService = NotificacionesService;
 exports.NotificacionesService = NotificacionesService = NotificacionesService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        mail_service_1.EmailService])
 ], NotificacionesService);
 //# sourceMappingURL=notificaciones.service.js.map

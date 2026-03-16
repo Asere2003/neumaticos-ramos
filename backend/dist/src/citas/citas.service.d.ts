@@ -1,11 +1,13 @@
 import { CreateCitaDto } from './dto/create-cita.dto';
+import { EmailService } from 'src/mail/mail.service';
 import { EstadoCita } from '@prisma/client';
 import { NotificacionesService } from '../notificaciones/notificaciones.service';
 import { PrismaService } from '../prisma/prisma.service';
 export declare class CitasService {
-    private prisma;
-    private notificaciones;
-    constructor(prisma: PrismaService, notificaciones: NotificacionesService);
+    private readonly prisma;
+    private readonly notificaciones;
+    private readonly email;
+    constructor(prisma: PrismaService, notificaciones: NotificacionesService, email: EmailService);
     crear(dto: CreateCitaDto): Promise<{
         servicio: {
             id: number;

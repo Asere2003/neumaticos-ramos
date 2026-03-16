@@ -16,6 +16,7 @@ const clientes_module_1 = require("./clientes/clientes.module");
 const config_1 = require("@nestjs/config");
 const configuracion_module_1 = require("./configuracion/configuracion.module");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
+const email_module_1 = require("./mail/email.module");
 const common_1 = require("@nestjs/common");
 const notificaciones_module_1 = require("./notificaciones/notificaciones.module");
 const prisma_module_1 = require("./prisma/prisma.module");
@@ -42,6 +43,7 @@ exports.AppModule = AppModule = __decorate([
             notificaciones_module_1.NotificacionesModule,
             dashboard_module_1.DashboardModule,
             configuracion_module_1.ConfiguracionModule,
+            email_module_1.EmailModule
         ],
         providers: [
             { provide: core_1.APP_GUARD, useClass: throttler_1.ThrottlerGuard },

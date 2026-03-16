@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CitasService = void 0;
 const common_1 = require("@nestjs/common");
+const mail_service_1 = require("../mail/mail.service");
 const client_1 = require("@prisma/client");
 const notificaciones_service_1 = require("../notificaciones/notificaciones.service");
 const prisma_service_1 = require("../prisma/prisma.service");
@@ -21,9 +22,11 @@ const dayjs_1 = __importDefault(require("dayjs"));
 let CitasService = class CitasService {
     prisma;
     notificaciones;
-    constructor(prisma, notificaciones) {
+    email;
+    constructor(prisma, notificaciones, email) {
         this.prisma = prisma;
         this.notificaciones = notificaciones;
+        this.email = email;
     }
     async crear(dto) {
         const fecha = (0, dayjs_1.default)(dto.fecha);
@@ -90,7 +93,16 @@ let CitasService = class CitasService {
             },
         });
         await this.notificaciones.enviarConfirmacionCita(cita);
-        await this.notificaciones.notificarNuevaCitaAdmin(cita);
+        if (cita.cliente.email) {
+            await this.email.enviarRecepcionCita({
+                nombre: cita.cliente.nombre,
+                email: cita.cliente.email,
+                fecha: (0, dayjs_1.default)(cita.fecha).format('DD/MM/YYYY'),
+                hora: (0, dayjs_1.default)(cita.fecha).format('HH:mm'),
+                servicio: cita.servicio.nombre,
+                matricula: cita.vehiculo.matricula,
+            });
+        }
         return cita;
     }
     async obtenerSlotsDisponibles(fecha, tipoServicio) {
@@ -200,6 +212,16 @@ let CitasService = class CitasService {
         });
         if (nuevoEstado === client_1.EstadoCita.CONFIRMADA) {
             await this.notificaciones.enviarConfirmacionCita(citaActualizada);
+            if (citaActualizada.cliente.email) {
+                await this.email.enviarConfirmacionCita({
+                    nombre: citaActualizada.cliente.nombre,
+                    email: citaActualizada.cliente.email,
+                    fecha: (0, dayjs_1.default)(citaActualizada.fecha).format('DD/MM/YYYY'),
+                    hora: (0, dayjs_1.default)(citaActualizada.fecha).format('HH:mm'),
+                    servicio: citaActualizada.servicio.nombre,
+                    matricula: citaActualizada.vehiculo.matricula,
+                });
+            }
         }
         if (nuevoEstado === client_1.EstadoCita.CANCELADA) {
             await this.notificaciones.enviarCancelacionCita(citaActualizada);
@@ -233,6 +255,7 @@ exports.CitasService = CitasService;
 exports.CitasService = CitasService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        notificaciones_service_1.NotificacionesService])
+        notificaciones_service_1.NotificacionesService,
+        mail_service_1.EmailService])
 ], CitasService);
 //# sourceMappingURL=citas.service.js.map
