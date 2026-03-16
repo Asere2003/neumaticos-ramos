@@ -8,6 +8,7 @@ import { ClientesModule } from './clientes/clientes.module';
 import { ConfigModule } from '@nestjs/config';
 import { ConfiguracionModule } from './configuracion/configuracion.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { EmailModule } from './mail/email.module';
 import { Module } from '@nestjs/common';
 import { NotificacionesModule } from './notificaciones/notificaciones.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -31,6 +32,7 @@ import { VehiculosModule } from './vehiculos/vehiculos.module';
     NotificacionesModule,
     DashboardModule,
     ConfiguracionModule,
+    EmailModule
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

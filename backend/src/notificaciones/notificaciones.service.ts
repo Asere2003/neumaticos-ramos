@@ -4,6 +4,7 @@ import { CanalNotificacion, TipoNotificacion } from '@prisma/client';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { ConfigService } from '@nestjs/config';
+import { EmailService } from '../mail/mail.service';
 import { PrismaService } from '../prisma/prisma.service';
 import dayjs from 'dayjs';
 
@@ -15,8 +16,9 @@ export class NotificacionesService {
   private readonly logger = new Logger(NotificacionesService.name);
 
   constructor(
-    private prisma: PrismaService,
-    private config: ConfigService,
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
+    private readonly email: EmailService,
   ) {}
 
   private interpolar(plantilla: string, vars: Record<string, string>): string {
@@ -42,15 +44,26 @@ export class NotificacionesService {
     });
     if (!config?.confirmacionCita) return;
 
-    const mensaje = this.interpolar(config.plantillaConfirmacion, {
-      NOMBRE:    cita.cliente.nombre.split(' ')[0],
-      FECHA:     dayjs(cita.fecha).format('dddd D [de] MMMM'),
-      HORA:      dayjs(cita.fecha).format('HH:mm'),
-      SERVICIO:  cita.servicio.nombre,
-      MATRICULA: cita.vehiculo.matricula,
-    });
+    const nombre   = cita.cliente.nombre.split(' ')[0];
+    const fecha    = dayjs(cita.fecha).format('dddd D [de] MMMM');
+    const hora     = dayjs(cita.fecha).format('HH:mm');
+    const servicio = cita.servicio.nombre;
+    const matricula = cita.vehiculo.matricula;
 
-    const enviado = await this.enviarWhatsApp(cita.cliente.telefono, mensaje);
+    // WhatsApp
+    const mensajeWA = this.interpolar(config.plantillaConfirmacion, {
+      NOMBRE: nombre, FECHA: fecha, HORA: hora,
+      SERVICIO: servicio, MATRICULA: matricula,
+    });
+    const enviadoWA = await this.enviarWhatsApp(cita.cliente.telefono, mensajeWA);
+
+    // Email
+    if (cita.cliente.email) {
+      await this.email.enviarConfirmacionCita({
+        nombre, email: cita.cliente.email,
+        fecha, hora, servicio, matricula,
+      });
+    }
 
     await this.prisma.notificacionEnviada.create({
       data: {
@@ -58,8 +71,8 @@ export class NotificacionesService {
         canal:     CanalNotificacion.WHATSAPP,
         clienteId: cita.clienteId,
         citaId:    cita.id,
-        enviado,
-        enviadoAt: enviado ? new Date() : null,
+        enviado:   enviadoWA,
+        enviadoAt: enviadoWA ? new Date() : null,
       },
     });
   }
@@ -89,13 +102,14 @@ export class NotificacionesService {
     });
     if (!config?.cancelacionCita) return;
 
-    const mensaje = this.interpolar(config.plantillaCancelacion, {
-      NOMBRE: cita.cliente.nombre.split(' ')[0],
-      FECHA:  dayjs(cita.fecha).format('dddd D [de] MMMM'),
-      HORA:   dayjs(cita.fecha).format('HH:mm'),
-    });
+    const nombre = cita.cliente.nombre.split(' ')[0];
+    const fecha  = dayjs(cita.fecha).format('dddd D [de] MMMM');
+    const hora   = dayjs(cita.fecha).format('HH:mm');
 
-    const enviado = await this.enviarWhatsApp(cita.cliente.telefono, mensaje);
+    const mensajeWA = this.interpolar(config.plantillaCancelacion, {
+      NOMBRE: nombre, FECHA: fecha, HORA: hora,
+    });
+    const enviado = await this.enviarWhatsApp(cita.cliente.telefono, mensajeWA);
 
     await this.prisma.notificacionEnviada.create({
       data: {
