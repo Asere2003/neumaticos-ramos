@@ -1,6 +1,5 @@
 // ============================================================
 // DESIGN TOKENS — NEUMÁTICOS RAMOS
-// Tema: Pirelli Drive — Negro + Amarillo
 // Cambia aquí y cambia todo el sistema
 // ============================================================
 
@@ -9,21 +8,18 @@
 :root {
 
   // PRIMITIVOS
-  // — Antes: azul Michelin → Ahora: carbón/negro Pirelli
-  --primitive-brand-950: #0A0A0A;
-  --primitive-brand-900: #111111;
-  --primitive-brand-800: #1A1A1A;
-  --primitive-brand-700: #222222;
-  --primitive-brand-600: #2E2E2E;
-  --primitive-brand-400: #555555;
-  --primitive-brand-200: #AAAAAA;
-  --primitive-brand-50:  #F2F2F2;
+  --primitive-blue-900: #001A50;
+  --primitive-blue-800: #002268;
+  --primitive-blue-700: #002B7F;
+  --primitive-blue-600: #003399;
+  --primitive-blue-400: #3D6FCC;
+  --primitive-blue-200: #A8C0F0;
+  --primitive-blue-50:  #EEF3FF;
 
-  // — Amarillo Pirelli (más cálido/intenso que el Michelin)
-  --primitive-yellow-600: #C49000;
-  --primitive-yellow-500: #FFD000;
-  --primitive-yellow-400: #FFD933;
-  --primitive-yellow-300: #FFE566;
+  --primitive-yellow-600: #C4A000;
+  --primitive-yellow-500: #FFCC00;
+  --primitive-yellow-400: #FFD633;
+  --primitive-yellow-300: #FFE066;
 
   --primitive-neutral-950: #0A0C0F;
   --primitive-neutral-900: #111318;
@@ -52,7 +48,7 @@
 }
 
 // ============================================================
-// TEMA CLARO (default) — Pirelli Drive
+// TEMA CLARO (default)
 // ============================================================
 [data-theme="light"], :root {
 
@@ -60,32 +56,32 @@
   --color-bg-page:        var(--primitive-neutral-50);
   --color-bg-surface:     var(--primitive-neutral-0);
   --color-bg-surface-2:   var(--primitive-neutral-100);
-  --color-bg-brand:       var(--primitive-brand-700);   // negro carbón (antes azul)
-  --color-bg-brand-dark:  var(--primitive-brand-950);   // negro puro (antes azul-900)
+  --color-bg-brand:       var(--primitive-blue-700);
+  --color-bg-brand-dark:  var(--primitive-blue-900);
 
   // TEXTOS
   --color-text-primary:   var(--primitive-neutral-900);
   --color-text-secondary: var(--primitive-neutral-400);
   --color-text-disabled:  var(--primitive-neutral-300);
   --color-text-inverse:   var(--primitive-neutral-0);
-  --color-text-brand:     var(--primitive-brand-700);   // negro (antes azul)
-  --color-text-accent:    var(--primitive-yellow-600);  // amarillo Pirelli
+  --color-text-brand:     var(--primitive-blue-700);
+  --color-text-accent:    var(--primitive-yellow-600);
 
   // BOTÓN PRIMARIO
-  --color-btn-primary-bg:    var(--primitive-brand-700);  // negro
+  --color-btn-primary-bg:    var(--primitive-blue-700);
   --color-btn-primary-text:  var(--primitive-neutral-0);
-  --color-btn-primary-hover: var(--primitive-brand-800);
+  --color-btn-primary-hover: var(--primitive-blue-800);
 
   // BOTÓN ACENTO
-  --color-btn-accent-bg:    var(--primitive-yellow-500);  // amarillo Pirelli
+  --color-btn-accent-bg:    var(--primitive-yellow-500);
   --color-btn-accent-text:  var(--primitive-neutral-900);
   --color-btn-accent-hover: var(--primitive-yellow-600);
 
   // BORDES
   --color-border-default: var(--primitive-neutral-100);
   --color-border-strong:  var(--primitive-neutral-200);
-  --color-border-brand:   var(--primitive-brand-700);
-  --color-border-focus:   var(--primitive-yellow-500);   // foco en amarillo Pirelli
+  --color-border-brand:   var(--primitive-blue-700);
+  --color-border-focus:   var(--primitive-blue-400);
 
   // ESTADOS
   --color-success-bg:   var(--primitive-green-100);
@@ -98,26 +94,26 @@
 }
 
 // ============================================================
-// TEMA OSCURO — Pirelli Drive
+// TEMA OSCURO
 // ============================================================
 [data-theme="dark"] {
 
-  --color-bg-page:        var(--primitive-brand-950);
-  --color-bg-surface:     var(--primitive-brand-900);
-  --color-bg-surface-2:   var(--primitive-brand-800);
-  --color-bg-brand:       var(--primitive-brand-950);
-  --color-bg-brand-dark:  #000000;
+  --color-bg-page:        var(--primitive-neutral-950);
+  --color-bg-surface:     var(--primitive-neutral-900);
+  --color-bg-surface-2:   var(--primitive-neutral-800);
+  --color-bg-brand:       var(--primitive-blue-900);
+  --color-bg-brand-dark:  var(--primitive-neutral-950);
 
   --color-text-primary:   var(--primitive-neutral-50);
   --color-text-secondary: var(--primitive-neutral-300);
   --color-text-disabled:  var(--primitive-neutral-500);
   --color-text-inverse:   var(--primitive-neutral-900);
-  --color-text-brand:     var(--primitive-brand-200);
+  --color-text-brand:     var(--primitive-blue-200);
   --color-text-accent:    var(--primitive-yellow-400);
 
-  --color-btn-primary-bg:    var(--primitive-brand-400);
+  --color-btn-primary-bg:    var(--primitive-blue-400);
   --color-btn-primary-text:  var(--primitive-neutral-0);
-  --color-btn-primary-hover: var(--primitive-brand-700);
+  --color-btn-primary-hover: var(--primitive-blue-700);
 
   --color-btn-accent-bg:    var(--primitive-yellow-400);
   --color-btn-accent-text:  var(--primitive-neutral-950);
@@ -125,8 +121,8 @@
 
   --color-border-default: var(--primitive-neutral-700);
   --color-border-strong:  var(--primitive-neutral-600);
-  --color-border-brand:   var(--primitive-yellow-500);   // amarillo como acento en dark
-  --color-border-focus:   var(--primitive-yellow-400);
+  --color-border-brand:   var(--primitive-blue-400);
+  --color-border-focus:   var(--primitive-blue-400);
 }
 
 // ============================================================
@@ -143,17 +139,17 @@
   --color-text-primary:   #FFFFFF;
   --color-text-secondary: #FFFFFF;
   --color-text-inverse:   #000000;
-  --color-text-brand:     #FFD000;
-  --color-text-accent:    #FFD000;
+  --color-text-brand:     #FFFF00;
+  --color-text-accent:    #FFFF00;
 
   --color-btn-primary-bg:    #FFFFFF;
   --color-btn-primary-text:  #000000;
-  --color-btn-accent-bg:     #FFD000;
+  --color-btn-accent-bg:     #FFFF00;
   --color-btn-accent-text:   #000000;
 
   --color-border-default: #FFFFFF;
   --color-border-strong:  #FFFFFF;
-  --color-border-focus:   #FFD000;
+  --color-border-focus:   #FFFF00;
 }
 
 // ============================================================

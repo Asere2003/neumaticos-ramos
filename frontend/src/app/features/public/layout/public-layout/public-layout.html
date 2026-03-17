@@ -3,10 +3,20 @@
 </a>
 
 <header class="mobile-header" role="banner">
+
   <div class="header-logo" aria-label="Neumaticos Ramos">
     <a routerLink="/" aria-label="Ir al inicio">
-      <span class="logo-top">Neumaticos</span>
-      <span class="logo-bottom">Ramos</span>
+      <!-- Logo SVG integrado inline para máximo rendimiento -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 130" width="160" height="44" aria-hidden="true">
+        <rect x="0" y="0" width="480" height="130" rx="12" fill="#111111"/>
+        <rect x="0" y="0" width="8" height="130" rx="4" fill="#FFD000"/>
+        <circle cx="72" cy="65" r="50" fill="#111111" stroke="#FFD000" stroke-width="4"/>
+        <text x="58" y="92" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="72" font-weight="900" fill="#FFFFFF" text-anchor="middle">R</text>
+        <text x="90" y="50" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="26" font-weight="700" fill="#FFD000" text-anchor="middle">A</text>
+        <rect x="33" y="100" width="78" height="4" rx="2" fill="#FFD000"/>
+        <text x="305" y="70" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="54" font-weight="900" fill="#FFFFFF" letter-spacing="2" text-anchor="middle">RAMOS</text>
+        <text x="305" y="108" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="22" font-weight="400" fill="#FFD000" letter-spacing="6" text-anchor="middle">NEUM&#193;TICOS</text>
+      </svg>
     </a>
   </div>
 
@@ -29,6 +39,7 @@
       📅 Cita
     </a>
   </div>
+
 </header>
 
 <!-- NAV MOBILE -->
@@ -45,7 +56,7 @@
     <span>Servicios</span>
   </a>
   <a routerLink="/reservar" routerLinkActive="mobile-nav-active"
-     class="mobile-nav-item " aria-label="Reservar cita">
+     class="mobile-nav-item" aria-label="Reservar cita">
     <span aria-hidden="true">📅</span>
     <span>Reservar</span>
   </a>
@@ -61,13 +72,36 @@
 </main>
 
 <footer class="footer" role="contentinfo">
-  <div class="footer-logo">Neumaticos <span>Ramos</span></div>
+  <!-- Badge Pirelli Drive en el footer -->
+  <div class="footer-badge">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 110" width="320" height="54" aria-label="Taller certificado Pirelli Drive">
+      <rect x="0" y="0" width="660" height="110" rx="12" fill="#1C1C1C"/>
+      <rect x="0" y="0" width="8" height="110" rx="4" fill="#FFD000"/>
+      <polygon points="28,23 43,15 58,23 58,43 43,51 28,43" fill="#FFD000"/>
+      <text x="43" y="40" font-family="Arial,sans-serif" font-size="13" font-weight="900" fill="#111111" text-anchor="middle">&#10003;</text>
+      <text x="75" y="31" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="13" font-weight="400" fill="#888888" letter-spacing="3">TALLER CERTIFICADO</text>
+      <text x="75" y="61" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="30" font-weight="700" fill="#FFFFFF" letter-spacing="2">PIRELLI <tspan fill="#FFD000">DRIVE</tspan></text>
+      <text x="75" y="85" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="12" font-weight="400" fill="#666666" letter-spacing="1">Distinción de excelencia · No todos los talleres la obtienen</text>
+      <rect x="445" y="28" width="178" height="64" rx="8" fill="#FFD000"/>
+      <clipPath id="pc">
+        <rect x="445" y="28" width="178" height="64" rx="8"/>
+      </clipPath>
+      <g clip-path="url(#pc)">
+        <g transform="translate(456.75, -17.2) scale(0.802)" fill-rule="evenodd" clip-rule="evenodd">
+          <path fill="#FFD000" d="M0 0h192.756v192.756H0V0z"/>
+          <path fill="#CC2200" d="M29.349 116.256h11.499V95.469H29.349v20.787zM176.176 116.256h11.5V95.469h-11.5v20.787z"/>
+          <path fill="#CC2200" d="M182.545 76.5H2.834v39.662h19.902V91.246l159.808.004a7.376 7.376 0 1 0 .001-14.75zm-22.076 9.721H22.737v-4.704l137.732.013a2.346 2.346 0 1 1 0 4.691z"/>
+          <path fill="#CC2200" d="M76.889 108.795c2.349-1.064 3.835-3.43 3.835-6.176 0-3.742-2.943-7.15-7.956-7.15H49.107v20.787h11.499v-6.707h3.76l3.464 6.707h12.899l-3.84-7.461zm-9.722-4.281h-6.561v-4.4l6.561.022a2.188 2.188 0 1 1 0 4.378zM87.941 116.256h25.358v-4.644h-13.86v-3.059h13.86v-5.012h-13.86v-3.059h13.86v-5.013H87.941v20.787zM132.637 95.469h-11.5v20.787h23.146v-4.644h-11.646V95.469zM159.738 95.469H148.24v20.787h23.145v-4.644h-11.647V95.469z"/>
+        </g>
+      </g>
+    </svg>
+  </div>
   <p class="footer-tagline">Tu taller de confianza en Armilla</p>
   <div class="footer-links">
     <a href="#" class="footer-link">Aviso Legal</a>
     <a href="#" class="footer-link">Privacidad</a>
     <a href="#" class="footer-link">Cookies</a>
   </div>
-  <p class="footer-copyright">© 2024 Neumaticos Ramos S.L.</p>
-</footer>
+  <p class="footer-copyright">© 2024 Neum&#193;ticos Ramos S.L.</p>
 
+</footer>

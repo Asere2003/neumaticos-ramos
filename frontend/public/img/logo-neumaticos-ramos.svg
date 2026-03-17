@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 130" width="480" height="130">
+  <rect x="0" y="0" width="480" height="130" rx="12" fill="#111111"/>
+  <rect x="0" y="0" width="8" height="130" rx="4" fill="#FFD000"/>
+
+  <circle cx="72" cy="65" r="50" fill="#111111" stroke="#FFD000" stroke-width="4"/>
+  <text x="58" y="92" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="72" font-weight="900" fill="#FFFFFF" text-anchor="middle">R</text>
+  <text x="90" y="50" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="26" font-weight="700" fill="#FFD000" text-anchor="middle">A</text>
+  <rect x="33" y="100" width="78" height="4" rx="2" fill="#FFD000"/>
+
+  <text x="305" y="70" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="54" font-weight="900" fill="#FFFFFF" letter-spacing="2" text-anchor="middle">RAMOS</text>
+  <text x="305" y="108" font-family="'Barlow Condensed','Arial Narrow',Arial,sans-serif" font-size="22" font-weight="400" fill="#FFD000" letter-spacing="6" text-anchor="middle">NEUM&#193;TICOS</text>
+</svg>
