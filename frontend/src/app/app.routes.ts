@@ -43,6 +43,16 @@ export const routes: Routes = [
             .then(m => m.Contacto),
         title: 'Contacto — Neumáticos Ramos',
       },
+      {
+        path: 'aviso-legal',
+        loadComponent: () => import('./features/public/legal/aviso-legal/aviso-legal')
+          .then(m => m.AvisoLegalComponent)
+      },
+      {
+        path: 'privacidad',
+        loadComponent: () => import('./features/public/legal/privacidad/privacidad')
+          .then(m => m.PrivacidadComponent)
+      },
     ],
   },
   {

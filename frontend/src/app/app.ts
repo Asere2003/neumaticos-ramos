@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 
+import { CookieBannerComponent } from "./shared/cookie-banner/cookie-banner";
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CookieBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

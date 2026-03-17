@@ -1,0 +1,32 @@
+@if (visible()) {
+  <div class="cookie-overlay" role="dialog" aria-modal="true" aria-label="Aviso de cookies">
+    <div class="cookie-banner">
+
+      <div class="cookie-header">
+        <span class="cookie-icon" aria-hidden="true">🍪</span>
+        <p class="cookie-titulo">Usamos cookies</p>
+      </div>
+
+      <p class="cookie-texto">
+        Este sitio usa cookies técnicas para funcionar correctamente.
+        Si aceptas, también cargaremos Google Maps para mostrarte
+        nuestra ubicación. Puedes rechazarlas y seguir navegando
+        con normalidad.
+      </p>
+
+      <div class="cookie-actions">
+        <button class="cookie-btn-rechazar" (click)="rechazar()">
+          Rechazar
+        </button>
+        <button class="cookie-btn-aceptar" (click)="aceptar()">
+          Aceptar todas
+        </button>
+      </div>
+
+      <a routerLink="/privacidad" class="cookie-link" (click)="rechazar()">
+        Política de cookies
+      </a>
+
+    </div>
+  </div>
+}

@@ -108,7 +108,7 @@
 
   .footer-tagline {
     font-size: var(--text-sm);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-1);
   }
 
   .footer-links {
@@ -130,6 +130,9 @@
     color: rgba(255,255,255,0.3);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+  @media (max-width: 767px) {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
   }
 }
 

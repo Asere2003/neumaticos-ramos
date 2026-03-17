@@ -47,51 +47,85 @@
 }
 
 // MAPA
-.mapa-placeholder {
+.mapa-container {
   width: 100%;
   height: 220px;
-  background: linear-gradient(135deg, #e8f0f8 0%, #cdd9ea 100%);
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border-default);
+  position: relative;
+
+  .mapa-iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+// CONSENT BANNER
+.mapa-consent {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-surface-2);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
-  border-bottom: 1px solid var(--color-border-default);
+  padding: var(--space-4);
 }
 
-.mapa-pin {
+.mapa-consent-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
-  z-index: 1;
+  text-align: center;
+  max-width: 280px;
 }
 
-.pin-icon {
-  width: 44px; height: 44px;
-  background: var(--color-bg-brand);
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  box-shadow: var(--shadow-lg);
-
-  &::after {
-    content: '📍';
-    font-size: 1.25rem;
-    transform: rotate(45deg);
-    display: block;
-    text-align: center;
-    line-height: 44px;
-  }
+.mapa-consent-icon {
+  font-size: 2rem;
+  opacity: 0.6;
 }
 
-.pin-label {
+.mapa-consent-titulo {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-black);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mapa-consent-texto {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.mapa-consent-btn {
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-5);
+  background: var(--color-btn-accent-bg);
+  color: var(--color-btn-accent-text);
+  font-family: var(--font-display);
   font-size: var(--text-sm);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  min-height: var(--touch-min);
+  transition: background 0.15s ease;
+
+  &:hover { background: var(--color-btn-accent-hover); }
+}
+
+.mapa-consent-link {
+  font-size: var(--text-xs);
   color: var(--color-text-brand);
-  background: white;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-sm);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: var(--weight-semibold);
 }
 
 // ACCIONES
@@ -310,17 +344,4 @@
   font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
   color: var(--color-text-secondary);
-}
-
-.mapa-container {
-  width: 100%;
-  height: 220px;
-  overflow: hidden;
-  border-bottom: 1px solid var(--color-border-default);
-
-  .mapa-iframe {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
 }

@@ -14,13 +14,24 @@ import { RouterLink } from '@angular/router';
 })
 export class Contacto implements OnInit {
 
-  config   = signal<ConfiguracionTaller | null>(null);
-  ahora    = new Date();
+  config         = signal<ConfiguracionTaller | null>(null);
+  ahora          = new Date();
+  mapaAceptado   = signal<boolean>(false);
 
-  constructor(private api: ApiService) {}
+  private readonly COOKIE_KEY = 'nr_maps_consent';
+
+  constructor(private readonly api: ApiService) {}
 
   ngOnInit() {
     this.api.getConfiguracion().subscribe(c => this.config.set(c));
+
+    // Recuperar consentimiento previo
+    try {
+      const stored = localStorage.getItem(this.COOKIE_KEY);
+      if (stored === 'true') this.mapaAceptado.set(true);
+    } catch {
+      // SSR: localStorage no disponible en servidor
+    }
   }
 
   get estadoAbierto(): boolean {
@@ -29,6 +40,15 @@ export class Contacto implements OnInit {
     if (dia === 0) return false;
     if (dia === 6) return hora >= 9 && hora < 13;
     return (hora >= 9 && hora < 14) || (hora >= 16 && hora < 20);
+  }
+
+  aceptarMapa() {
+    this.mapaAceptado.set(true);
+    try {
+      localStorage.setItem(this.COOKIE_KEY, 'true');
+    } catch {
+      // SSR safe
+    }
   }
 
   copiarDireccion() {
