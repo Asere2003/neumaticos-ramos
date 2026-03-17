@@ -18,6 +18,7 @@ export class Home implements OnInit {
   servicios     = signal<Servicio[]>([]);
   configuracion = signal<ConfiguracionTaller | null>(null);
   ahora         = new Date();
+  seoAbierto    = false;
 
   iconos: Record<string, string> = {
     NEUMATICOS:  '🔄',
@@ -33,11 +34,11 @@ export class Home implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.title.setTitle('Neumaticos Ramos — Taller de Neumaticos en Armilla, Granada');
-    this.meta.updateTag({ name: 'description', content: 'Taller de neumaticos en Armilla, Granada. Cambio de neumaticos, alineacion, equilibrado y llantas. Reserva cita online.' });
-    this.meta.updateTag({ property: 'og:title', content: 'Neumaticos Ramos — Armilla, Granada' });
-    this.meta.updateTag({ property: 'og:description', content: 'Taller profesional en Armilla. Neumaticos Michelin, Kleber, BFGoodrich. Reserva tu cita online.' });
-    this.meta.updateTag({ name: 'keywords', content: 'neumaticos Armilla, taller neumaticos Granada, cambio neumaticos, alineacion direccion' });
+    this.title.setTitle('Neumáticos Ramos — Taller Pirelli Drive en Armilla, Granada');
+    this.meta.updateTag({ name: 'description', content: 'Taller de neumáticos en Armilla, Granada. Taller certificado Pirelli Drive. Cambio de neumáticos, alineación, equilibrado y llantas. Más de 20 años de experiencia. Reserva cita online.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Neumáticos Ramos — Taller Pirelli Drive en Armilla, Granada' });
+    this.meta.updateTag({ property: 'og:description', content: 'Taller certificado Pirelli Drive en Armilla, Granada. Más de 20 años de experiencia en neumáticos, alineación, equilibrado y llantas. Reserva tu cita online.' });
+    this.meta.updateTag({ name: 'keywords', content: 'taller neumáticos Granada, neumáticos Armilla, cambio neumáticos Granada, taller Pirelli Granada, equilibrado ruedas Granada, alineación dirección Granada, llantas Granada, cambiar neumáticos coche Granada' });
 
     this.api.getServicios().subscribe(s => this.servicios.set(s));
     this.api.getConfiguracion().subscribe(c => this.configuracion.set(c));
@@ -46,8 +47,8 @@ export class Home implements OnInit {
   get estaAbierto(): boolean {
     const hora  = this.ahora.getHours();
     const dia   = this.ahora.getDay();
-    if (dia === 0) return false; // Domingo cerrado
-    if (dia === 6) return hora >= 9 && hora < 13; // Sábado
+    if (dia === 0) return false;
+    if (dia === 6) return hora >= 9 && hora < 13;
     return (hora >= 9 && hora < 14) || (hora >= 16 && hora < 20);
   }
 

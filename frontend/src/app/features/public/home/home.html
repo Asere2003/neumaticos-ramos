@@ -1,6 +1,6 @@
 <!-- HERO -->
 <section class="hero" aria-label="Bienvenida">
-  <div class="hero-badge" aria-hidden="true">🔧 Taller Profesional Armilla</div>
+  <div class="hero-badge" aria-hidden="true">🔧 Taller Pirelli Drive · Más de 20 años en Armilla</div>
 
   <h1 class="hero-title">
     Neumáticos<br><span>Ramos</span>
@@ -95,6 +95,48 @@
       <span class="why-icon">📅</span>
       <span class="why-title">Cita Online</span>
       <span class="why-desc">Reserva en 30 segundos</span>
+    </div>
+  </div>
+</section>
+
+<!-- ACORDEÓN SEO -->
+<section class="seo-section" aria-label="Taller de neumáticos en Armilla Granada">
+  <button
+    class="seo-toggle"
+    [class.open]="seoAbierto"
+    (click)="seoAbierto = !seoAbierto"
+    [attr.aria-expanded]="seoAbierto">
+    <span>Conócenos mejor</span>
+    <span class="seo-toggle-icon" aria-hidden="true">{{ seoAbierto ? '−' : '+' }}</span>
+  </button>
+
+  <div class="seo-content" [class.visible]="seoAbierto">
+    <h2 class="seo-title">Tu taller de neumáticos en Armilla, Granada</h2>
+    <div class="seo-text-block">
+      <p>
+        En <strong>Neumáticos Ramos</strong> llevamos más de 20 años cambiando neumáticos
+        en Armilla y toda la provincia de Granada. Somos especialistas en la venta y montaje
+        de neumáticos para coche, furgoneta y SUV de todas las marcas y medidas —
+        Pirelli, Michelin, Kleber, BFGoodrich y Kormoran.
+      </p>
+      <p>
+        Como <strong>Taller Certificado Pirelli Drive</strong>, una distinción que no tienen
+        todos los talleres, garantizamos un servicio profesional con técnicos especializados
+        y más de dos décadas de experiencia en el sector del neumático en Granada.
+      </p>
+      <p>
+        Además del cambio de neumáticos, realizamos <strong>alineación de dirección</strong>
+        con tecnología láser 3D, <strong>equilibrado de ruedas</strong> para eliminar
+        vibraciones y disponemos de un amplio catálogo de <strong>llantas de acero y aleación</strong>.
+        Todo en un mismo taller, en Avenida de Poniente, 39, Armilla.
+      </p>
+      <p>
+        ¿Necesitas cambiar los neumáticos de tu coche en Granada? Reserva tu cita online
+        en menos de 30 segundos o llámanos al
+        <a href="tel:+34958571753">958 57 17 53</a>.
+        Atendemos de lunes a viernes de 9:00 a 14:00 y de 16:00 a 20:30,
+        y los sábados de 9:00 a 13:00.
+      </p>
     </div>
   </div>
 </section>
