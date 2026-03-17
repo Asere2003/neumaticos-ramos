@@ -4,6 +4,7 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
+import { existsSync, readFileSync } from 'node:fs';
 
 import express from 'express';
 import { join } from 'node:path';
@@ -22,16 +23,22 @@ const angularApp = new AngularNodeAppEngine({
 });
 
 /**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
+ * Servir robots.txt y sitemap.xml explícitamente
  */
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`User-agent: *\nAllow: /\n\nSitemap: https://neumaticosramos.es/sitemap.xml`);
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  const sitemapPath = join(browserDistFolder, 'sitemap.xml');
+  if (existsSync(sitemapPath)) {
+    res.type('application/xml');
+    res.send(readFileSync(sitemapPath, 'utf-8'));
+  } else {
+    res.status(404).send('Sitemap not found');
+  }
+});
 
 /**
  * Serve static files from /browser
